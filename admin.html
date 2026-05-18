@@ -1,0 +1,1765 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0"/>
+<title>Luxe — Admin Panel</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Instrument+Serif&display=swap" rel="stylesheet"/>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{--bg:#fafafb;--surface:#fff;--surface-2:#f4f4f7;--surface-3:#ebebf0;--border:rgba(15,15,25,.08);--border-2:rgba(15,15,25,.14);--ink-1:#0a0a0f;--ink-2:#1f1f2e;--ink-3:#52526b;--ink-4:#8a8aa3;--brand:#6366f1;--brand-2:#8b5cf6;--brand-3:#ec4899;--brand-grad:linear-gradient(135deg,#6366f1 0%,#8b5cf6 50%,#ec4899 100%);--success:#10b981;--warning:#f59e0b;--danger:#ef4444;--sh-sm:0 2px 8px rgba(15,15,25,.04);--sh-md:0 8px 24px -8px rgba(15,15,25,.08);--sh-lg:0 24px 48px -12px rgba(15,15,25,.12);--sh-glow:0 10px 40px -10px rgba(99,102,241,.4)}
+body{font-family:'Inter',-apple-system,system-ui,sans-serif;background:var(--bg);color:var(--ink-1);max-width:480px;margin:0 auto;min-height:100vh;letter-spacing:-0.011em}
+.hidden{display:none!important}
+#loginScreen{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;background:linear-gradient(135deg,#6366f1,#8b5cf6 50%,#ec4899)}
+.adm-logo-orb{width:80px;height:80px;background:#fff;border-radius:22px;display:flex;align-items:center;justify-content:center;font-family:'Instrument Serif',serif;font-size:40px;color:#6366f1;font-style:italic;box-shadow:0 30px 60px -15px rgba(0,0,0,.3);margin-bottom:18px}
+.adm-logo{font-family:'Instrument Serif',serif;font-size:36px;font-style:italic;color:#fff;letter-spacing:-1px;margin-bottom:4px}
+.adm-tagline{font-size:11px;color:rgba(255,255,255,.85);font-weight:600;letter-spacing:4px;margin-bottom:32px;text-transform:uppercase}
+.login-card{background:#fff;border-radius:24px;padding:28px 24px;width:100%;box-shadow:0 30px 80px rgba(0,0,0,.3)}
+.login-card h2{font-size:20px;font-weight:700;margin-bottom:4px;letter-spacing:-0.02em}
+.login-card p{font-size:13px;color:var(--ink-3);margin-bottom:20px}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:11px;font-weight:600;color:var(--ink-3);margin-bottom:6px;letter-spacing:0.02em}
+.inp{width:100%;padding:12px 14px;border:1px solid var(--border);border-radius:12px;font-size:14px;font-family:inherit;outline:none;color:var(--ink-1);background:var(--surface);transition:all .2s}
+.inp:focus{border-color:var(--brand);box-shadow:0 0 0 4px rgba(99,102,241,.1)}
+.login-btn{width:100%;padding:14px;background:linear-gradient(135deg,#6366f1,#8b5cf6,#ec4899);color:#fff;border:none;border-radius:14px;font-size:15px;font-weight:600;cursor:pointer;font-family:inherit;margin-top:6px;box-shadow:var(--sh-glow);transition:transform .2s}
+.login-btn:active{transform:scale(.98)}
+.err-msg{color:var(--danger);font-size:12px;font-weight:500;margin-top:8px;display:none;text-align:center}
+#adminApp{display:none;min-height:100vh;padding-bottom:30px}
+.adm-hdr{background:rgba(255,255,255,.85);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);color:var(--ink-1);padding:14px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;border-bottom:1px solid var(--border)}
+.adm-hdr-left{display:flex;align-items:center;gap:10px}
+.adm-hdr-orb{width:34px;height:34px;background:linear-gradient(135deg,#6366f1,#8b5cf6,#ec4899);border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'Instrument Serif',serif;font-size:18px;color:#fff;font-style:italic;box-shadow:var(--sh-glow)}
+.adm-hdr h2{font-size:16px;font-weight:700;letter-spacing:-0.02em}
+.adm-hdr-sub{font-size:10px;color:var(--ink-4);margin-top:1px;font-weight:500;letter-spacing:0.05em;text-transform:uppercase}
+.logout-btn{background:var(--surface-2);border:1px solid var(--border);color:var(--ink-1);padding:8px 14px;border-radius:10px;cursor:pointer;font-weight:600;font-size:12px;font-family:inherit}
+.logout-btn:hover{background:var(--ink-1);color:#fff}
+.adm-tabs{display:flex;overflow-x:auto;scrollbar-width:none;background:#fff;border-bottom:1px solid var(--border);padding:0 4px}
+.adm-tabs::-webkit-scrollbar{display:none}
+.atab{padding:14px 14px;border:none;background:none;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;color:var(--ink-4);flex-shrink:0;border-bottom:2px solid transparent;transition:all .2s;white-space:nowrap;letter-spacing:-0.01em}
+.atab.on{color:var(--brand);border-bottom-color:var(--brand)}
+.adm-body{padding:14px}
+.adm-card{background:var(--surface);border-radius:18px;padding:16px;margin-bottom:12px;border:1px solid var(--border);box-shadow:var(--sh-sm)}
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.stat-card{background:var(--surface);border-radius:18px;padding:16px;border:1px solid var(--border);box-shadow:var(--sh-sm);text-align:center}
+.stat-num{font-size:26px;font-weight:800;line-height:1;letter-spacing:-0.03em}
+.stat-lbl{font-size:11px;color:var(--ink-4);margin-top:4px;font-weight:500}
+.sts-btns{display:flex;flex-wrap:wrap;gap:6px;margin-top:10px}
+.s-btn{padding:7px 12px;border-radius:8px;border:none;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s}
+.s-btn:active{opacity:.8;transform:scale(.96)}
+.badge{display:inline-block;padding:4px 10px;border-radius:8px;font-size:11px;font-weight:600}
+.b-confirmed,.b-delivered{background:rgba(16,185,129,.1);color:#059669}
+.b-pending,.b-processing{background:rgba(245,158,11,.1);color:#d97706}
+.b-shipped,.b-packed{background:rgba(99,102,241,.1);color:#4f46e5}
+.b-cancelled{background:rgba(239,68,68,.1);color:#dc2626}
+.b-delayed{background:rgba(245,158,11,.1);color:#d97706}
+.b-out-for-delivery,.b-out-of-delivery{background:rgba(59,130,246,.1);color:#2563eb}
+.cust-r{font-size:12px;padding:6px 0;display:flex;gap:8px;border-bottom:1px solid var(--surface-2);align-items:flex-start}
+.cust-r:last-child{border:none}
+.cust-k{color:var(--brand);font-weight:600;min-width:90px;flex-shrink:0}
+.search-bar{background:var(--surface);padding:10px 14px;margin-bottom:10px;border-radius:14px;border:1px solid var(--border);box-shadow:var(--sh-sm);display:flex;gap:8px;align-items:center}
+.search-bar input{flex:1;border:none;outline:none;font-size:13px;font-family:inherit;background:transparent;color:var(--ink-1)}
+.add-form{background:var(--surface);border-radius:18px;padding:16px;border:1px solid var(--border);box-shadow:var(--sh-sm)}
+.inp-2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+select.inp{background:var(--surface)}
+textarea.inp{resize:vertical;font-family:inherit}
+.place-btn{width:100%;padding:14px;background:linear-gradient(135deg,#6366f1,#8b5cf6,#ec4899);color:#fff;border:none;border-radius:14px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;margin-top:8px;box-shadow:var(--sh-glow);letter-spacing:-0.01em}
+.place-btn:active{transform:scale(.98)}
+.toast{position:fixed;top:14px;left:50%;transform:translateX(-50%);background:rgba(15,15,25,.92);backdrop-filter:blur(20px);color:#fff;padding:12px 20px;border-radius:14px;font-size:13px;font-weight:500;z-index:9000;opacity:0;pointer-events:none;transition:opacity .3s;max-width:90%;text-align:center;box-shadow:var(--sh-lg)}
+.toast.on{opacity:1}
+.empty-st{text-align:center;padding:40px 20px}
+.empty-st .ei{font-size:60px;margin-bottom:12px;opacity:.4}
+.empty-st p{color:var(--ink-3);font-weight:500;font-size:14px}
+.modal-ov{position:fixed;inset:0;background:rgba(15,15,25,.5);backdrop-filter:blur(8px);z-index:8000;display:flex;align-items:flex-end;justify-content:center}
+.modal-box{background:var(--surface);width:100%;max-width:480px;border-radius:24px 24px 0 0;padding:22px 18px 28px;max-height:90vh;overflow-y:auto;animation:slideUp .3s ease;box-shadow:0 -20px 60px -10px rgba(0,0,0,.2)}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.modal-handle{width:40px;height:4px;background:var(--surface-3);border-radius:4px;margin:0 auto 16px}
+.pay-detail-box{background:linear-gradient(135deg,rgba(99,102,241,.04),rgba(236,72,153,.04));border:1px solid var(--border);border-radius:14px;padding:14px;margin-top:8px}
+.pay-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--surface-2);font-size:12px}
+.pay-row:last-child{border:none}
+.pay-label{color:var(--ink-3);font-weight:500}
+.pay-value{font-weight:700;color:var(--ink-1);word-break:break-all;text-align:right;max-width:60%}
+.sens-badge{background:rgba(239,68,68,.1);color:var(--danger);font-size:10px;font-weight:700;padding:2px 6px;border-radius:6px;margin-left:4px}
+.prod-admin-card{background:var(--surface);border-radius:14px;padding:12px;margin-bottom:10px;border:1px solid var(--border);box-shadow:var(--sh-sm)}
+.prod-admin-actions{display:flex;gap:6px;margin-top:10px}
+.prod-action-btn{flex:1;padding:9px 4px;border:none;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;transition:all .15s}
+.prod-action-btn:hover{transform:translateY(-1px)}
+.oos-toggle{background:rgba(245,158,11,.1);color:#d97706}
+.oos-toggle.active{background:rgba(16,185,129,.1);color:#059669}
+.tag-badge{font-size:9px;font-weight:700;padding:2px 6px;border-radius:5px}
+
+@keyframes pulse {
+  0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(99,102,241,.4);}
+  50%{transform:scale(1.03);box-shadow:0 0 0 8px rgba(99,102,241,0);}
+}
+</style>
+<script>
+// Force clear all products every load
+localStorage.removeItem('cp');
+localStorage.removeItem('bp_overrides');
+</script>
+</head>
+<body>
+<div class="toast" id="toast"></div>
+
+<!-- LOGIN -->
+<div id="loginScreen">
+  <div class="adm-logo-orb" id="loginOrb">L</div>
+  <div class="adm-logo" id="loginLogoText">Luxe</div>
+  <div class="adm-tagline">ADMIN PANEL</div>
+  <div class="login-card">
+    <h2>🔐 Admin Login</h2>
+    <p>Enter your credentials to manage your store</p>
+    <div class="field">
+      <label>Username</label>
+      <input class="inp" id="admUser" type="text" placeholder="admin" onkeydown="if(event.key==='Enter')doLogin()"/>
+    </div>
+    <div class="field">
+      <label>Password</label>
+      <input class="inp" id="admPass" type="password" placeholder="Enter password" onkeydown="if(event.key==='Enter')doLogin()"/>
+    </div>
+    <button class="login-btn" onclick="doLogin()">Login →</button>
+    <div class="err-msg" id="loginErr">❌ Wrong credentials</div>
+    <div style="text-align:center;margin-top:14px;font-size:11px;color:var(--ink-4)">Default: admin / admin123</div>
+  </div>
+</div>
+
+<!-- EDIT MODAL -->
+<div class="modal-ov hidden" id="editModal">
+  <div class="modal-box">
+    <div class="modal-handle"></div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border)">
+      <div style="font-size:18px;font-weight:700;letter-spacing:-0.02em">✏️ Edit Product</div>
+      <button onclick="closeEdit()" style="background:var(--surface-2);border:none;width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:14px">✕</button>
+    </div>
+    <div class="field"><label>Product Name</label><input class="inp" id="epName"/></div>
+    <div class="field"><label>Brand</label><input class="inp" id="epBrand"/></div>
+    <div class="field"><label>Category</label>
+      <select class="inp" id="epCat"></select>
+    </div>
+    <div class="inp-2">
+      <div class="field"><label>MRP (₹)</label><input class="inp" id="epMrp" type="number"/></div>
+      <div class="field"><label>Selling Price (₹)</label><input class="inp" id="epSp" type="number"/></div>
+    </div>
+    <div class="inp-2">
+      <div class="field"><label>Discount %</label><input class="inp" id="epDisc" type="number"/></div>
+      <div class="field"><label>Stock</label><input class="inp" id="epStock" type="number"/></div>
+    </div>
+    <div class="field"><label>SKU</label><input class="inp" id="epSku"/></div>
+    <div style="font-size:12px;font-weight:700;margin-bottom:8px">🖼️ Images</div>
+    <div id="epImgSlots" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:8px"></div>
+    <button onclick="document.getElementById('epImgFilePick').click()" style="width:100%;padding:10px;background:var(--surface-2);border:2px dashed var(--border);border-radius:10px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;color:var(--ink-2);margin-bottom:8px">📷 Gallery se Add Karo</button>
+    <input type="file" id="epImgFilePick" accept="image/*" multiple style="display:none" onchange="epHandleImgUpload(this)"/>
+    <div class="field"><label>Image 1 (Main)</label><input class="inp" id="epI1" placeholder="https://..." oninput="epUpdateImgSlot(0,this.value)"/></div>
+    <div class="field"><label>Image 2</label><input class="inp" id="epI2" placeholder="https://..." oninput="epUpdateImgSlot(1,this.value)"/></div>
+    <div class="field"><label>Image 3</label><input class="inp" id="epI3" placeholder="https://..." oninput="epUpdateImgSlot(2,this.value)"/></div>
+    <div class="field"><label>Image 4</label><input class="inp" id="epI4" placeholder="https://..." oninput="epUpdateImgSlot(3,this.value)"/></div>
+    <div class="field"><label>Image 5</label><input class="inp" id="epI5" placeholder="https://..." oninput="epUpdateImgSlot(4,this.value)"/></div>
+    <div class="field"><label>Description</label><textarea class="inp" id="epDesc" rows="3"></textarea></div>
+    <div style="margin-bottom:12px">
+      <div style="font-size:12px;font-weight:700;margin-bottom:6px">📏 Sizes</div>
+      <div id="epSizeTags" style="display:flex;flex-wrap:wrap;gap:6px;min-height:36px;padding:10px;background:var(--surface-2);border:1.5px solid var(--border);border-radius:12px;margin-bottom:8px;cursor:text" onclick="document.getElementById('epSizeInp').focus()"></div>
+      <div style="display:flex;gap:8px">
+        <input class="inp" id="epSizeInp" placeholder="Size add karo → Enter" style="flex:1;font-size:13px" onkeydown="if(event.key==='Enter'||event.key===','){event.preventDefault();epAddSizeTag();}"/>
+        <button onclick="epAddSizeTag()" style="padding:11px 14px;background:var(--brand);color:#fff;border:none;border-radius:12px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit">+</button>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;padding:12px;background:var(--surface-2);border-radius:12px">
+      <input type="checkbox" id="epOos" style="width:18px;height:18px;cursor:pointer"/>
+      <label for="epOos" style="font-size:14px;font-weight:600;cursor:pointer">Mark as Out of Stock</label>
+    </div>
+    <input type="hidden" id="epId"/>
+    <input type="hidden" id="epType"/>
+    <button class="place-btn" onclick="saveEditProd()" style="margin-bottom:10px">💾 Save Changes</button>
+    <button onclick="delFromEdit()" style="width:100%;padding:13px;background:rgba(239,68,68,.08);color:var(--danger);border:1.5px solid rgba(239,68,68,.2);border-radius:14px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit">🗑️ Delete Product</button>
+  </div>
+</div>
+
+<!-- ADMIN APP -->
+<div id="adminApp">
+  <div class="adm-hdr">
+    <div class="adm-hdr-left">
+      <div class="adm-hdr-orb" id="hdrOrb">L</div>
+      <div>
+        <h2>Admin Panel</h2>
+        <div class="adm-hdr-sub" id="admSiteName">Luxe</div>
+      </div>
+    </div>
+    <button class="logout-btn" onclick="doLogout()">Logout →</button>
+  </div>
+  <div class="adm-tabs">
+    <button class="atab on" onclick="setTab('orders',this)">📦 Orders</button>
+    <button class="atab" onclick="setTab('products',this)">🛍️ Products</button>
+    <button class="atab" onclick="setTab('customers',this)">👥 Customers</button>
+    <button class="atab" onclick="setTab('add',this)">➕ Add</button>
+    <button class="atab" onclick="setTab('policies',this)">📜 Policies</button>
+    <button class="atab" onclick="setTab('customize',this)">🎨 Theme</button>
+    <button class="atab" onclick="setTab('banners',this)">🖼️ Banners</button>
+    <button class="atab" onclick="setTab('settings',this)">⚙️ Settings</button>
+  </div>
+  <div class="adm-body">
+
+    <!-- ORDERS -->
+    <div id="tabOrders">
+      <div class="stats-grid" id="statsGrid"></div>
+      <div class="search-bar"><span>🔍</span><input id="ordSearch" placeholder="Search by order ID, name, phone..." oninput="renderOrders()"/></div>
+      <div id="aOrders"></div>
+    </div>
+
+    <!-- PRODUCTS -->
+    <div id="tabProducts" class="hidden">
+      <div class="adm-card" style="display:flex;justify-content:space-between;align-items:center">
+        <div style="font-size:13px;font-weight:600;color:var(--ink-3)" id="prodCount">Loading...</div>
+        <div style="font-size:11px;color:var(--brand);font-weight:600">Tap ✏️ to edit</div>
+      </div>
+      <div class="search-bar"><span>🔍</span><input id="prodSearch" placeholder="Search products..." oninput="renderProducts()"/></div>
+      <div style="display:flex;gap:0;background:var(--surface);border-radius:12px;overflow:hidden;margin-bottom:10px;border:1px solid var(--border)">
+        <button id="ptab-all" onclick="setProdTab('all',this)" style="flex:1;padding:11px;border:none;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;background:var(--ink-1);color:#fff">All Products</button>
+        <button id="ptab-custom" onclick="setProdTab('custom',this)" style="flex:1;padding:11px;border:none;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;background:var(--surface);color:var(--ink-3)">Custom Only</button>
+      </div>
+      <div id="aProds"></div>
+    </div>
+
+    <!-- CUSTOMERS -->
+    <div id="tabCustomers" class="hidden">
+      <div class="search-bar"><span>🔍</span><input id="custSearch" placeholder="Search customers..." oninput="renderCustomers()"/></div>
+      <div id="aCusts"></div>
+    </div>
+
+    <!-- ADD PRODUCT -->
+    <div id="tabAdd" class="hidden">
+      <div class="add-form">
+        <div style="font-size:18px;font-weight:700;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--border);letter-spacing:-0.02em">➕ Add New Product</div>
+        <div class="field"><label>Product Name *</label><input class="inp" id="apN" placeholder="e.g. Premium Wireless Earbuds"/></div>
+        <div class="field"><label>Brand</label><input class="inp" id="apB" placeholder="Brand name"/></div>
+        <div class="field"><label>Category *</label><select class="inp" id="apC"></select></div>
+        <div class="inp-2">
+          <div class="field"><label>MRP (₹) *</label><input class="inp" id="apMrp" type="number" placeholder="1999"/></div>
+          <div class="field"><label>Selling Price (₹) *</label><input class="inp" id="apSp" type="number" placeholder="999"/></div>
+        </div>
+        <div class="inp-2">
+          <div class="field"><label>Discount %</label><input class="inp" id="apD" type="number" placeholder="Auto"/></div>
+          <div class="field"><label>Stock</label><input class="inp" id="apSt" type="number" placeholder="10"/></div>
+        </div>
+        <div class="field"><label>SKU</label><input class="inp" id="apSku" placeholder="SKU-001"/></div>
+        <div class="field"><label>Description</label><textarea class="inp" id="apDesc" rows="3" placeholder="Product description..."></textarea></div>
+
+        <!-- 5 IMAGES -->
+        <div style="font-size:13px;font-weight:700;margin:14px 0 8px;padding-top:14px;border-top:1px solid var(--border)">🖼️ Product Images (upto 5)</div>
+        <div style="font-size:11px;color:var(--ink-3);margin-bottom:10px">Gallery se select karo ya URL paste karo — dono kaam karte hain</div>
+
+        <!-- Image upload slots -->
+        <div id="apImgSlots" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px"></div>
+        <button onclick="document.getElementById('apImgFilePick').click()" style="width:100%;padding:12px;background:var(--surface-2);border:2px dashed var(--border);border-radius:12px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;color:var(--ink-2);margin-bottom:6px">
+          📷 Gallery se Images Choose Karo
+        </button>
+        <input type="file" id="apImgFilePick" accept="image/*" multiple style="display:none" onchange="apHandleImgUpload(this)"/>
+        <div style="text-align:center;font-size:11px;color:var(--ink-4);margin-bottom:10px">— ya URL paste karo —</div>
+        <div class="field"><label>Image 1 URL (Main)</label><input class="inp" id="apI1" placeholder="https://..." oninput="apUpdateImgSlot(0,this.value)"/></div>
+        <div class="field"><label>Image 2 URL</label><input class="inp" id="apI2" placeholder="https://..." oninput="apUpdateImgSlot(1,this.value)"/></div>
+        <div class="field"><label>Image 3 URL</label><input class="inp" id="apI3" placeholder="https://..." oninput="apUpdateImgSlot(2,this.value)"/></div>
+        <div class="field"><label>Image 4 URL</label><input class="inp" id="apI4" placeholder="https://..." oninput="apUpdateImgSlot(3,this.value)"/></div>
+        <div class="field"><label>Image 5 URL</label><input class="inp" id="apI5" placeholder="https://..." oninput="apUpdateImgSlot(4,this.value)"/>
+        </div>
+
+        <!-- COLOR VARIANTS -->
+        <div style="font-size:13px;font-weight:700;margin:14px 0 4px;padding-top:14px;border-top:1px solid var(--border)">🎨 Color Variants (optional)</div>
+        <div style="font-size:11px;color:var(--ink-3);margin-bottom:12px">Har color ka alag price aur image set kar sakte ho</div>
+        <div id="variantsList"></div>
+        <button onclick="addVariantRow()" style="width:100%;padding:11px;background:var(--surface-2);border:1.5px dashed var(--border);border-radius:12px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;color:var(--ink-2);margin-bottom:14px">+ Add Color Variant</button>
+
+        <!-- SIZE INPUT BOX -->
+        <div style="border-top:1px solid var(--border);padding-top:14px;margin-top:4px">
+          <div style="font-size:13px;font-weight:700;margin-bottom:6px">📏 Sizes for this product</div>
+          <div style="font-size:11px;color:var(--ink-3);margin-bottom:10px">Size type karo → Enter dabao → tag ban jaayega. Blank chhodo agar size nahi chahiye.</div>
+          <div id="apSizeTags" style="display:flex;flex-wrap:wrap;gap:6px;min-height:36px;padding:10px;background:var(--surface-2);border:1.5px solid var(--border);border-radius:12px;margin-bottom:8px;cursor:text" onclick="document.getElementById('apSizeInp').focus()"></div>
+          <div style="display:flex;gap:8px;margin-bottom:8px">
+            <input class="inp" id="apSizeInp" placeholder="e.g. S, M, L, 28, 30, 9..." style="flex:1;font-size:13px" onkeydown="if(event.key==='Enter'||event.key===','){event.preventDefault();apAddSizeTag();}"/>
+            <button onclick="apAddSizeTag()" style="padding:11px 16px;background:var(--brand);color:#fff;border:none;border-radius:12px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit">+</button>
+          </div>
+          <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px">
+            <button onclick="apQuickSizes(['XS','S','M','L','XL','XXL'])" style="padding:5px 10px;background:var(--surface-2);border:1px solid var(--border);border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit">👕 XS-XXL</button>
+            <button onclick="apQuickSizes(['28','30','32','34','36','38','40'])" style="padding:5px 10px;background:var(--surface-2);border:1px solid var(--border);border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit">👖 28-40</button>
+            <button onclick="apQuickSizes(['6','7','8','9','10','11'])" style="padding:5px 10px;background:var(--surface-2);border:1px solid var(--border);border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit">👟 6-11</button>
+            <button onclick="apQuickSizes(['Free Size'])" style="padding:5px 10px;background:var(--surface-2);border:1px solid var(--border);border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit">🎽 Free</button>
+          </div>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;padding:12px;background:var(--surface-2);border-radius:12px">
+          <input type="checkbox" id="apOos" style="width:18px;height:18px;cursor:pointer"/>
+          <label for="apOos" style="font-size:14px;font-weight:600;cursor:pointer">Mark as Out of Stock</label>
+        </div>
+        <button class="place-btn" onclick="doAddProd()">➕ Add Product</button>
+      </div>
+    </div>
+
+    <!-- POLICIES -->
+    <div id="tabPolicies" class="hidden">
+      <div class="adm-card">
+        <div style="font-size:16px;font-weight:700;margin-bottom:4px;letter-spacing:-0.02em">📜 Policy Pages</div>
+        <div style="font-size:12px;color:var(--ink-3)">Edit privacy, refund, terms & shipping policies</div>
+      </div>
+
+      <div class="adm-card">
+        <div style="font-size:14px;font-weight:700;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--border)">🏪 Footer Info</div>
+        <div class="field"><label>Tagline</label><input class="inp" id="ftTagline" placeholder="Premium shopping experience"/></div>
+        <div class="field"><label>Support Email</label><input class="inp" id="ftEmail" placeholder="support@luxe.in" type="email"/></div>
+        <div class="field"><label>Phone</label><input class="inp" id="ftPhone" placeholder="+91XXXXXXXXXX"/></div>
+        <div class="field"><label>Copyright</label><input class="inp" id="ftCopy" placeholder="Luxe. All rights reserved."/></div>
+        <button class="place-btn" onclick="saveFooter()">💾 Save Footer</button>
+      </div>
+
+      <div class="adm-card">
+        <div style="font-size:14px;font-weight:700;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border)">📝 Edit Policy</div>
+        <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px">
+          <button onclick="selPolicyTab('privacy',this)" id="ptPrivacy" style="padding:8px 14px;background:var(--ink-1);color:#fff;border:none;border-radius:10px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">Privacy</button>
+          <button onclick="selPolicyTab('refund',this)" id="ptRefund" style="padding:8px 14px;background:var(--surface-2);color:var(--ink-3);border:none;border-radius:10px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">Refund</button>
+          <button onclick="selPolicyTab('terms',this)" id="ptTerms" style="padding:8px 14px;background:var(--surface-2);color:var(--ink-3);border:none;border-radius:10px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">Terms</button>
+          <button onclick="selPolicyTab('shipping',this)" id="ptShipping" style="padding:8px 14px;background:var(--surface-2);color:var(--ink-3);border:none;border-radius:10px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit">Shipping</button>
+        </div>
+        <div class="field"><label>Page Title</label><input class="inp" id="polTitle"/></div>
+        <div class="field"><label>Content (HTML allowed)</label><textarea class="inp" id="polContent" rows="10" style="font-size:12px;line-height:1.6;font-family:monospace"></textarea></div>
+        <button class="place-btn" onclick="savePolicyContent()">💾 Save This Policy</button>
+        <button onclick="resetPolicies()" style="width:100%;padding:12px;background:rgba(245,158,11,.1);color:#d97706;border:1px solid rgba(245,158,11,.2);border-radius:12px;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;margin-top:8px">↺ Reset Policies to Default</button>
+      </div>
+    </div>
+
+    <!-- CUSTOMIZE -->
+    <div id="tabCustomize" class="hidden">
+      <div class="adm-card">
+        <div style="font-size:16px;font-weight:700;margin-bottom:4px;letter-spacing:-0.02em">🎨 Theme Colors</div>
+        <div style="font-size:12px;color:var(--ink-3);margin-bottom:14px">Customize your store's appearance</div>
+        <div class="inp-2" style="margin-bottom:10px">
+          <div class="field">
+            <label>Primary Color</label>
+            <div style="display:flex;gap:6px;align-items:center">
+              <input type="color" id="thPrimary" value="#6366f1" style="width:44px;height:44px;border:none;border-radius:8px;cursor:pointer;padding:2px"/>
+              <input class="inp" id="thPrimaryHex" placeholder="#6366f1" style="flex:1;font-size:13px" oninput="syncColor('thPrimary','thPrimaryHex')"/>
+            </div>
+          </div>
+          <div class="field">
+            <label>Background</label>
+            <div style="display:flex;gap:6px;align-items:center">
+              <input type="color" id="thBg" value="#fafafb" style="width:44px;height:44px;border:none;border-radius:8px;cursor:pointer;padding:2px"/>
+              <input class="inp" id="thBgHex" placeholder="#fafafb" style="flex:1;font-size:13px" oninput="syncColor('thBg','thBgHex')"/>
+            </div>
+          </div>
+        </div>
+        <div style="font-size:11px;font-weight:600;color:var(--ink-3);margin-bottom:8px">⚡ QUICK PRESETS:</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px">
+          <div onclick="applyPreset('#6366f1')" style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#6366f1,#ec4899);cursor:pointer;border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.15)" title="Indigo Pink"></div>
+          <div onclick="applyPreset('#0a0a0f')" style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#0a0a0f,#52526b);cursor:pointer;border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.15)" title="Mono"></div>
+          <div onclick="applyPreset('#10b981')" style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#059669,#10b981);cursor:pointer;border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.15)" title="Emerald"></div>
+          <div onclick="applyPreset('#f59e0b')" style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#f59e0b,#ef4444);cursor:pointer;border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.15)" title="Sunset"></div>
+          <div onclick="applyPreset('#3b82f6')" style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#3b82f6,#06b6d4);cursor:pointer;border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.15)" title="Ocean"></div>
+          <div onclick="applyPreset('#ec4899')" style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#ec4899,#f472b6);cursor:pointer;border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.15)" title="Pink"></div>
+          <div onclick="applyPreset('#8b5cf6')" style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#8b5cf6,#a78bfa);cursor:pointer;border:2px solid #fff;box-shadow:0 2px 6px rgba(0,0,0,.15)" title="Purple"></div>
+        </div>
+        <button class="place-btn" onclick="saveTheme()">💾 Save Colors</button>
+      </div>
+
+      <div class="adm-card">
+        <div style="font-size:16px;font-weight:700;margin-bottom:14px;letter-spacing:-0.02em">🔤 Font Style</div>
+        <div class="field">
+          <label>Choose Font</label>
+          <select class="inp" id="thFont" onchange="previewFont(this.value)">
+            <option value="Inter">Inter (Default)</option>
+            <option value="Poppins">Poppins</option>
+            <option value="Roboto">Roboto</option>
+            <option value="Montserrat">Montserrat</option>
+            <option value="Playfair Display">Playfair Display</option>
+            <option value="DM Sans">DM Sans</option>
+            <option value="Manrope">Manrope</option>
+            <option value="Outfit">Outfit</option>
+            <option value="Plus Jakarta Sans">Plus Jakarta Sans</option>
+          </select>
+        </div>
+        <div id="fontPreviewBox" style="padding:14px;background:var(--surface-2);border-radius:12px;font-size:18px;font-weight:600;text-align:center;margin-bottom:10px">Luxe — Premium Shopping</div>
+        <button class="place-btn" onclick="saveFont()">💾 Save Font</button>
+      </div>
+
+      <div class="adm-card">
+        <div style="font-size:16px;font-weight:700;margin-bottom:4px;letter-spacing:-0.02em">📂 Categories</div>
+        <div style="font-size:12px;color:var(--ink-3);margin-bottom:14px">Manage category names, icons & images</div>
+        <div id="catEditorList"></div>
+        <div style="height:1px;background:var(--border);margin:14px 0"></div>
+        <div style="font-size:13px;font-weight:700;margin-bottom:12px">➕ Add New Category</div>
+        <div class="inp-2">
+          <div class="field"><label>Category ID</label><input class="inp" id="newCatId" placeholder="Jewelry"/></div>
+          <div class="field"><label>Display Label</label><input class="inp" id="newCatLbl" placeholder="Jewelry"/></div>
+        </div>
+        <div class="inp-2">
+          <div class="field"><label>Emoji Icon</label><input class="inp" id="newCatIco" placeholder="💎" maxlength="4"/></div>
+          <div class="field"><label>BG Color</label><input type="color" id="newCatBg" value="#f4f4f7" style="width:100%;height:42px;border:1px solid var(--border);border-radius:10px;cursor:pointer;padding:2px 6px"/></div>
+        </div>
+        <div class="field"><label>Image URL (optional)</label><input class="inp" id="newCatImg" placeholder="https://..."/></div>
+        <button class="place-btn" onclick="addCat()">➕ Add Category</button>
+        <button onclick="resetCats()" style="width:100%;padding:12px;background:rgba(245,158,11,.1);color:#d97706;border:1px solid rgba(245,158,11,.2);border-radius:12px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;margin-top:8px">↺ Reset to Default</button>
+      </div>
+    </div>
+
+    <!-- BANNERS -->
+    <div id="tabBanners" class="hidden">
+      <div class="adm-card">
+        <div style="font-size:16px;font-weight:700;margin-bottom:4px;letter-spacing:-0.02em">🖼️ Banner Manager</div>
+        <div style="font-size:12px;color:var(--ink-3)">Add up to 5 banners (image or gradient)</div>
+      </div>
+
+      <div class="adm-card">
+        <div style="font-size:14px;font-weight:700;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--border)">➕ Add New Banner</div>
+        <div style="display:flex;gap:0;border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:14px">
+          <button id="bTypeGrad" onclick="setBnrType('gradient')" style="flex:1;padding:11px;border:none;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;background:var(--ink-1);color:#fff">🎨 Gradient</button>
+          <button id="bTypeImg" onclick="setBnrType('image')" style="flex:1;padding:11px;border:none;font-size:12px;font-weight:600;cursor:pointer;font-family:inherit;background:var(--surface);color:var(--ink-3)">🖼️ Image URL</button>
+        </div>
+        <div id="bnrGradSec">
+          <div class="inp-2">
+            <div class="field"><label>Color 1</label><input class="inp" id="bnrC1" type="color" value="#6366f1" style="height:42px;padding:4px 8px;cursor:pointer"/></div>
+            <div class="field"><label>Color 2</label><input class="inp" id="bnrC2" type="color" value="#ec4899" style="height:42px;padding:4px 8px;cursor:pointer"/></div>
+          </div>
+        </div>
+        <div id="bnrImgSec" style="display:none">
+          <div class="field"><label>Image URL *</label><input class="inp" id="bnrImgUrl" placeholder="https://..."/></div>
+        </div>
+        <div class="field"><label>Heading</label><input class="inp" id="bnrTitle" placeholder="New Season"/></div>
+        <div class="field"><label>Subtitle</label><input class="inp" id="bnrSub" placeholder="Up to 70% off"/></div>
+        <div style="margin-bottom:14px">
+          <div style="font-size:11px;font-weight:600;color:var(--ink-3);margin-bottom:6px">LIVE PREVIEW:</div>
+          <div id="bnrPreview" style="height:120px;border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;overflow:hidden;position:relative;background:linear-gradient(135deg,#6366f1,#ec4899)">
+            <div id="pvTitle" style="font-family:'Instrument Serif',serif;font-style:italic;font-size:26px;color:#fff;text-align:center;padding:0 12px;text-shadow:0 2px 6px rgba(0,0,0,.3)">New Season</div>
+            <div id="pvSub" style="font-size:12px;color:rgba(255,255,255,.9);font-weight:500;text-align:center">Up to 70% off</div>
+          </div>
+        </div>
+        <button class="place-btn" onclick="addBanner()">➕ Add Banner</button>
+      </div>
+
+      <div class="adm-card">
+        <div style="font-size:14px;font-weight:700;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border)">📋 Current Banners</div>
+        <div id="bnrList"></div>
+        <button onclick="resetBanners()" style="width:100%;margin-top:12px;padding:12px;background:rgba(245,158,11,.1);color:#d97706;border:1px solid rgba(245,158,11,.2);border-radius:12px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">↺ Reset to Default</button>
+      </div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div id="tabSettings" class="hidden">
+      <div class="adm-card">
+        <div style="font-size:16px;font-weight:700;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--border);letter-spacing:-0.02em">⚙️ Site Settings</div>
+        <div class="field"><label>Site Name</label><input class="inp" id="setN" placeholder="Luxe"/></div>
+        <button class="place-btn" onclick="doSaveSet()">💾 Save</button>
+      </div>
+
+      <div class="adm-card">
+        <div style="font-size:16px;font-weight:700;margin-bottom:6px;letter-spacing:-0.02em">💳 Cashfree Payment Setup</div>
+        <div style="background:rgba(99,102,241,.06);border:1px solid rgba(99,102,241,.15);border-radius:12px;padding:12px;margin-bottom:14px;font-size:11px;color:var(--brand);line-height:1.8;font-weight:500">
+          <b>One-time setup (2 min):</b><br/>
+          1️⃣ workers.cloudflare.com → Sign up free<br/>
+          2️⃣ Create Worker → Paste worker.js code<br/>
+          3️⃣ Settings → Variables → Add: <code>CF_APP_ID</code> &amp; <code>CF_SECRET_KEY</code><br/>
+          4️⃣ Deploy → Copy Worker URL → Paste below
+        </div>
+        <div class="field"><label>Cloudflare Worker URL</label><input class="inp" id="setCfWorkerUrl" placeholder="https://luxe-pay.your-name.workers.dev"/></div>
+        <button class="place-btn" onclick="saveCfSettings()">💾 Save &amp; Export</button>
+      </div>
+
+      <div class="adm-card">
+        <div style="font-size:16px;font-weight:700;margin-bottom:4px;letter-spacing:-0.02em">💳 Card Discount</div>
+        <div style="font-size:12px;color:var(--ink-3);margin-bottom:14px">Discount % on card payments</div>
+        <div style="background:rgba(16,185,129,.06);border:1px solid rgba(16,185,129,.15);border-radius:12px;padding:12px;margin-bottom:14px;display:flex;align-items:center;gap:10px">
+          <div style="font-size:24px">💡</div>
+          <div style="font-size:12px;color:#059669;font-weight:500;line-height:1.5">UPI: ₹1000 → ₹1000<br/>Card: ₹1000 → ₹700 (30% off)</div>
+        </div>
+        <div class="field">
+          <label>Discount % (0-70)</label>
+          <div style="display:flex;gap:10px;align-items:center">
+            <input type="range" id="cardDiscSlider" min="0" max="70" value="30" style="flex:1" oninput="document.getElementById('cardDiscVal').textContent=this.value+'%';document.getElementById('cardDiscInp').value=this.value"/>
+            <span id="cardDiscVal" style="font-size:20px;font-weight:800;color:var(--brand);min-width:48px">30%</span>
+          </div>
+          <input class="inp" id="cardDiscInp" type="number" min="0" max="70" value="30" style="margin-top:8px" oninput="document.getElementById('cardDiscSlider').value=this.value;document.getElementById('cardDiscVal').textContent=this.value+'%'"/>
+        </div>
+        <button class="place-btn" onclick="saveCardDisc()">💾 Save Discount</button>
+      </div>
+
+      <div class="adm-card">
+        <div style="font-size:16px;font-weight:700;margin-bottom:6px;letter-spacing:-0.02em">📏 Size Management</div>
+        <div style="font-size:12px;color:var(--ink-3);margin-bottom:14px">Koi bhi size type karo — alphabet (S, M, XL) ya number (28, 30, 9) — Enter dabao, tag ban jaayega</div>
+
+        <div style="border:1.5px solid var(--border);border-radius:14px;padding:10px;min-height:52px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:10px;background:var(--surface)" id="sizeTags" onclick="document.getElementById('sizeTypeInp').focus()"></div>
+        <div style="display:flex;gap:8px;margin-bottom:6px">
+          <input class="inp" id="sizeTypeInp" placeholder="Size type karo — S, M, 32, 9... phir Enter" style="flex:1" onkeydown="if(event.key==='Enter'||event.key===','){event.preventDefault();addTypedSize();}"/>
+          <button onclick="addTypedSize()" style="padding:12px 18px;background:var(--brand);color:#fff;border:none;border-radius:12px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit">+ Add</button>
+        </div>
+        <div style="font-size:11px;color:var(--ink-4);margin-bottom:12px">💡 Size pe tap karo — Out of Stock toggle hoga. ✕ se delete.</div>
+
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:14px">
+          <button onclick="addQuickSizes(['XS','S','M','L','XL','XXL','3XL'])" style="padding:6px 11px;background:var(--surface-2);border:1px solid var(--border);border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit">👕 XS–3XL</button>
+          <button onclick="addQuickSizes(['28','30','32','34','36','38','40','42'])" style="padding:6px 11px;background:var(--surface-2);border:1px solid var(--border);border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit">👖 28–42</button>
+          <button onclick="addQuickSizes(['6','7','8','9','10','11','12'])" style="padding:6px 11px;background:var(--surface-2);border:1px solid var(--border);border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit">👟 6–12</button>
+          <button onclick="addQuickSizes(['Free Size'])" style="padding:6px 11px;background:var(--surface-2);border:1px solid var(--border);border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit">🎽 Free</button>
+          <button onclick="clearAllSizes()" style="padding:6px 11px;background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;font-family:inherit;color:var(--danger)">🗑 Clear All</button>
+        </div>
+
+        <button onclick="saveSizes()" style="width:100%;padding:13px;background:var(--brand);color:#fff;border:none;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit">💾 Save & Export</button>
+      </div>
+
+      <div class="adm-card">
+        <div style="font-size:16px;font-weight:700;margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--border);letter-spacing:-0.02em">🔑 Change Login Credentials</div>
+        <div style="font-size:12px;color:var(--ink-3);margin-bottom:12px;background:rgba(99,102,241,.06);border-radius:10px;padding:10px;line-height:1.8">
+          ✅ Change karke Save karo — <b>Export ki zaroorat nahi</b><br/>Seedha is admin.html mein save ho jaata hai
+        </div>
+        <div class="field"><label>New Username *</label><input class="inp" id="newUser" type="text" placeholder="New username"/></div>
+        <div class="field"><label>New Password *</label><input class="inp" id="newPw" type="password" placeholder="Min 6 characters"/></div>
+        <div class="field"><label>Confirm Password *</label><input class="inp" id="conPw" type="password" placeholder="Re-enter new password"/></div>
+        <div class="field"><label>Current Password * (verification)</label><input class="inp" id="curPw" type="password" placeholder="Enter current password to confirm"/></div>
+        <button class="place-btn" onclick="changeCredentials()">💾 Save Credentials</button>
+      </div>
+
+      <div class="adm-card" style="border:2px solid var(--brand);background:linear-gradient(135deg,rgba(99,102,241,.04),rgba(236,72,153,.04))">
+        <div style="font-size:18px;font-weight:700;margin-bottom:4px;color:var(--brand);letter-spacing:-0.02em">📤 Export & Publish</div>
+        <div style="font-size:12px;color:var(--ink-3);margin-bottom:14px;line-height:1.6">Make changes → Click button → Get updated <b>index.html</b> → Upload to GitHub. ✅ All devices will see same.</div>
+        <div style="background:var(--surface);border-radius:12px;padding:12px;margin-bottom:12px;border:1px solid var(--border)">
+          <div style="font-size:12px;font-weight:700;color:var(--brand);margin-bottom:8px">📋 Steps:</div>
+          <div style="font-size:12px;color:var(--ink-2);line-height:2">
+            1️⃣ Click button below → <b>index.html</b> downloads<br/>
+            2️⃣ GitHub → repo → delete old <b>index.html</b><br/>
+            3️⃣ Upload new file → Commit<br/>
+            4️⃣ ✅ Live on all devices!
+          </div>
+        </div>
+        <div style="background:rgba(16,185,129,.06);border-radius:10px;padding:10px;margin-bottom:14px;font-size:11px;color:#059669;line-height:1.7">
+          ✅ <b>All baked:</b> Site name · Theme · Categories · Banners · Products · Card discount · Cashfree · Policies · Footer
+        </div>
+        <div id="exportProgress" style="display:none;text-align:center;padding:16px">
+          <div style="font-size:32px;margin-bottom:8px">⏳</div>
+          <div style="font-size:13px;font-weight:600;color:var(--brand)">Generating...</div>
+        </div>
+        <button onclick="exportSite()" id="exportBtn" class="place-btn" style="display:flex;align-items:center;justify-content:center;gap:8px"><span style="font-size:20px">📥</span> Download Updated index.html</button>
+        <div style="font-size:11px;color:var(--ink-4);text-align:center;margin-top:8px">Orders data won't export (stays local)</div>
+      </div>
+
+      <div class="adm-card">
+        <div style="font-size:15px;font-weight:700;margin-bottom:12px;color:var(--danger)">🗑️ Danger Zone</div>
+        <button onclick="clearAllOrders()" style="width:100%;padding:12px;background:rgba(239,68,68,.06);color:var(--danger);border:1px solid rgba(239,68,68,.15);border-radius:12px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;margin-bottom:8px">Clear All Orders</button>
+        <button onclick="clearProductOverrides()" style="width:100%;padding:12px;background:rgba(245,158,11,.06);color:#d97706;border:1px solid rgba(245,158,11,.15);border-radius:12px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">Reset Product Edits</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const DEFAULT_USER='admin';
+const DEFAULT_PASS='admin123';
+function getAdmPass(){return localStorage.getItem('admPass')||DEFAULT_PASS;}
+function getAdmUser(){return localStorage.getItem('admUser')||DEFAULT_USER;}
+let admLoggedIn=false;
+
+function applyAdmSiteName(){
+  const sn=localStorage.getItem('sn')||'Luxe';
+  const initial=sn.charAt(0).toUpperCase();
+  const lo=document.getElementById('loginOrb');if(lo)lo.textContent=initial;
+  const lt=document.getElementById('loginLogoText');if(lt)lt.textContent=sn;
+  const ho=document.getElementById('hdrOrb');if(ho)ho.textContent=initial;
+  const sn2=document.getElementById('admSiteName');if(sn2)sn2.textContent=sn;
+}
+applyAdmSiteName();
+
+function doLogin(){
+  const u=document.getElementById('admUser').value.trim();
+  const p=document.getElementById('admPass').value;
+  if(u===getAdmUser()&&p===getAdmPass()){
+    admLoggedIn=true;
+    document.getElementById('loginScreen').style.display='none';
+    document.getElementById('adminApp').style.display='block';
+    applyAdmSiteName();
+    document.getElementById('setN').value=localStorage.getItem('sn')||'Luxe';
+    document.getElementById('setCfWorkerUrl').value=localStorage.getItem('cf_worker_url')||'https://lively-surf-ef4d.comclaude7.workers.dev';
+    renderStats();renderOrders();
+    document.getElementById('loginErr').style.display='none';
+  } else {
+    document.getElementById('loginErr').style.display='block';
+    document.getElementById('admPass').value='';
+  }
+}
+function doLogout(){
+  admLoggedIn=false;
+  document.getElementById('loginScreen').style.display='flex';
+  document.getElementById('adminApp').style.display='none';
+  document.getElementById('admPass').value='';
+  document.getElementById('admUser').value='';
+}
+function changeCredentials(){
+  const cur=document.getElementById('curPw').value;
+  const nw=document.getElementById('newPw').value;
+  const con=document.getElementById('conPw').value;
+  const usr=document.getElementById('newUser').value.trim();
+  if(cur!==getAdmPass()){toast('❌ Wrong current password');return;}
+  if(!usr||usr.length<3){toast('Username min 3 characters');return;}
+  if(nw.length<6){toast('Password min 6 characters');return;}
+  if(nw!==con){toast('Passwords do not match');return;}
+  localStorage.setItem('admPass',nw);
+  localStorage.setItem('admUser',usr);
+  ['curPw','newPw','conPw','newUser'].forEach(id=>document.getElementById(id).value='');
+  toast('✅ Credentials saved! Exporting...');
+  setTimeout(exportSite, 800);
+}
+
+let curTab='orders';
+function setTab(t,btn){
+  curTab=t;
+  document.querySelectorAll('.atab').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  ['tabOrders','tabProducts','tabCustomers','tabAdd','tabPolicies','tabCustomize','tabBanners','tabSettings'].forEach(id=>document.getElementById(id).classList.add('hidden'));
+  const m={orders:'tabOrders',products:'tabProducts',customers:'tabCustomers',add:'tabAdd',policies:'tabPolicies',customize:'tabCustomize',banners:'tabBanners',settings:'tabSettings'};
+  document.getElementById(m[t]).classList.remove('hidden');
+  if(t==='orders'){renderStats();renderOrders();}
+  else if(t==='products'){renderProducts();populateCatDropdown();}
+  else if(t==='add'){populateCatDropdown();initApImgSlots();}
+  else if(t==='customers')renderCustomers();
+  else if(t==='policies')loadPoliciesTab();
+  else if(t==='customize')loadCustomizeTab();
+  else if(t==='banners'){renderBannerList();updateBnrPreview();}
+  else if(t==='settings'){
+    document.getElementById('setN').value=localStorage.getItem('sn')||'Luxe';
+    document.getElementById('setCfWorkerUrl').value=localStorage.getItem('cf_worker_url')||'https://lively-surf-ef4d.comclaude7.workers.dev';
+    loadCardDiscSetting();
+    renderSizeEditor();
+  }
+}
+
+function getAllOrders(){return JSON.parse(localStorage.getItem('ords')||'[]');}
+function saveAllOrders(o){localStorage.setItem('ords',JSON.stringify(o));}
+// In-memory product store — no localStorage limit
+let __CP_MEM__ = [];
+
+function getCP(){
+  if(__CP_MEM__ !== null) return __CP_MEM__;
+  try{
+    const stored = localStorage.getItem('cp') || '[]';
+    __CP_MEM__ = JSON.parse(stored);
+  }catch(e){__CP_MEM__=[];}
+  return __CP_MEM__;
+}
+
+function saveCP(arr){
+  __CP_MEM__ = arr;
+  // Try localStorage too (best effort, may fail for large images)
+  try{
+    // Strip base64 images for localStorage, keep URLs only
+    const slim = arr.map(p=>({
+      ...p,
+      images: p.images ? p.images.map(img =>
+        img && img.startsWith('data:') ? '__b64__' : img
+      ) : []
+    }));
+    localStorage.setItem('cp', JSON.stringify(slim));
+  }catch(e){
+    // localStorage full — in-memory only, export to save permanently
+    localStorage.removeItem('cp');
+  }
+  return true;
+}
+
+function getCPFull(){
+  // Returns full in-memory copy with base64 images
+  return __CP_MEM__ !== null ? __CP_MEM__ : getCP();
+}
+function getBPOverrides(){return JSON.parse(localStorage.getItem('bp_overrides')||'{}');}
+function saveBPOverrides(o){localStorage.setItem('bp_overrides',JSON.stringify(o));}
+
+const BP_COUNT=75;
+function getBaseProd(i){
+  const C=['Fashion','Electronics','Mobiles','Beauty','Home','Sports','Books','Toys'];
+  const cat=C[i%C.length];
+  const N={Fashion:['Slim Fit Chinos','Oversized Tee','Cargo Pants','Denim Jacket','Polo Shirt','Linen Shirt','Track Pants','Hoodie','Formal Trousers','Bomber Jacket'],Electronics:['Wireless Earbuds','Smart Watch','Bluetooth Speaker','Power Bank','USB Hub','Webcam HD','Mechanical Keyboard','Gaming Mouse','LED Strip','Desk Lamp'],Mobiles:['Phone Case','Screen Protector','Fast Charger','Car Mount','Pop Socket','Braided Cable','Earphones','Phone Stand','Battery Pack','Lens Kit'],Beauty:['Face Wash','Moisturizer','Vitamin C Serum','Lip Balm','Sunscreen','Rose Toner','Eye Cream','Night Cream','Face Mask','Micellar Water'],Home:['Cushion Cover','Wall Clock','Photo Frame','Candle Set','Storage Box','Throw Blanket','Doormat','Planter Set','Mirror','String Lights'],Sports:['Yoga Mat','Resistance Bands','Jump Rope','Water Bottle','Gym Gloves','Knee Support','Sports Shoes','Cycling Helmet','Goggles','Fitness Tracker'],Books:['Self Help Guide','Fiction Novel','Cookbook','Art History','Science Digest','Programming','Philosophy','Biography','Poetry','Business'],Toys:['Building Blocks','1000pc Puzzle','Board Game','RC Car','Doll House','Slime Kit','Card Game','Foam Sword','Play-Doh','Science Kit']};
+  const nm=N[cat][i%N[cat].length];
+  const mrp=500+((i*137+300)%4500);
+  const D=[10,15,20,25,30,40,50,60,70];const disc=D[i%9];
+  const price=Math.floor(mrp*(1-disc/100));
+  const BR=['Nordic','Atelier','Maison','Studio','Heritage','Modern','Classic','Edition'];
+  return{id:i+1,name:nm,category:cat,mrp,price,discount:disc,rating:(3.5+(i*0.027)%1.4).toFixed(1),reviews:500+(i*370)%45000,images:[`https://picsum.photos/seed/${i+1}/500/500`,`https://picsum.photos/seed/${i+50}/500/500`,`https://picsum.photos/seed/${i+150}/500/500`],brand:BR[i%8],description:`Premium quality ${nm.toLowerCase()} crafted with attention to detail.`,stock:5+(i*3)%50,sku:`SKU-${String(i+1).padStart(4,'0')}`,custom:false,outOfStock:false};
+}
+function getAllBP(){
+  const overrides=getBPOverrides();
+  return Array.from({length:BP_COUNT},(_,i)=>{
+    const base=getBaseProd(i);
+    if(overrides[i+1])return{...base,...overrides[i+1],id:i+1};
+    return base;
+  });
+}
+
+function renderStats(){
+  const ords=getAllOrders();
+  const total=ords.length;
+  const revenue=ords.filter(o=>o.status!=='Cancelled').reduce((s,o)=>s+o.tot,0);
+  const pending=ords.filter(o=>['Pending','Confirmed','Processing','Packed'].includes(o.status)).length;
+  const delivered=ords.filter(o=>o.status==='Delivered').length;
+  document.getElementById('statsGrid').innerHTML=`
+    <div class="stat-card"><div class="stat-num" style="background:linear-gradient(135deg,#6366f1,#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent">${total}</div><div class="stat-lbl">Total Orders</div></div>
+    <div class="stat-card"><div class="stat-num" style="color:#059669">₹${(revenue/1000).toFixed(1)}K</div><div class="stat-lbl">Revenue</div></div>
+    <div class="stat-card"><div class="stat-num" style="color:#d97706">${pending}</div><div class="stat-lbl">Active</div></div>
+    <div class="stat-card"><div class="stat-num" style="color:#059669">${delivered}</div><div class="stat-lbl">Delivered</div></div>`;
+}
+
+function renderOrders(){
+  const ords=getAllOrders();
+  const q=(document.getElementById('ordSearch')||{}).value?.toLowerCase()||'';
+  const filtered=q?ords.filter(o=>o.id.toLowerCase().includes(q)||(o.cust?.name||'').toLowerCase().includes(q)||(o.cust?.phone||'').includes(q)||o.status.toLowerCase().includes(q)):ords;
+  const el=document.getElementById('aOrders');
+  if(!filtered.length){el.innerHTML=`<div class="empty-st"><div class="ei">📦</div><p>No orders found</p></div>`;return;}
+  el.innerHTML=filtered.map((o)=>{
+    const sc=o.status.toLowerCase().replace(/\s+/g,'-');
+    const payDetails=renderPayDetails(o);
+    return`<div class="adm-card">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px">
+        <div>
+          <div style="font-size:13px;font-weight:700">#${o.id}</div>
+          <div style="font-size:11px;color:var(--ink-4);margin-top:2px">${o.date}</div>
+        </div>
+        <div class="badge b-${sc}">${o.status}</div>
+      </div>
+      <div style="font-size:11px;font-weight:700;color:var(--ink-3);margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px">👤 Customer Info</div>
+      <div class="cust-r"><span class="cust-k">Name</span>${o.cust?.name||'N/A'}</div>
+      <div class="cust-r"><span class="cust-k">Phone</span>+91 ${o.cust?.phone||'N/A'}</div>
+      <div class="cust-r"><span class="cust-k">Address</span><span style="word-break:break-word">${o.cust?.addr||'N/A'}</span></div>
+      <div class="cust-r"><span class="cust-k">Amount</span>₹${o.tot?.toLocaleString()||0}</div>
+      ${o.size?`<div class="cust-r"><span class="cust-k">Size</span>${o.size}</div>`:''}
+      <div class="cust-r"><span class="cust-k">Items</span>${o.items?.length||0} item(s)</div>
+      ${payDetails}
+      <div style="margin-top:12px;margin-bottom:6px;font-size:11px;font-weight:700;color:var(--ink-3);text-transform:uppercase;letter-spacing:.5px">📦 Order Items</div>
+      ${(o.items||[]).map(it=>`<div style="display:flex;gap:10px;align-items:center;margin-bottom:8px">
+        <img src="${it.images?it.images[0]:'https://picsum.photos/40'}" style="width:42px;height:42px;object-fit:contain;border-radius:8px;background:var(--surface-2);padding:3px;flex-shrink:0" onerror="this.src='https://picsum.photos/40'"/>
+        <div><div style="font-size:12px;font-weight:600">${it.name}</div><div style="font-size:11px;color:var(--ink-4)">Qty: ${it.qty} · ₹${it.price?it.price.toLocaleString():0}</div></div>
+      </div>`).join('')}
+      <div style="margin-top:12px;font-size:11px;color:var(--ink-3);font-weight:600;margin-bottom:8px">📌 UPDATE STATUS:</div>
+      <div class="sts-btns">
+        <button class="s-btn" style="background:rgba(245,158,11,.1);color:#d97706" onclick="updSt('${o.id}','Pending')">Pending</button>
+        <button class="s-btn" style="background:rgba(99,102,241,.1);color:#4f46e5" onclick="updSt('${o.id}','Processing')">Processing</button>
+        <button class="s-btn" style="background:rgba(99,102,241,.1);color:#4f46e5" onclick="updSt('${o.id}','Packed')">Packed</button>
+        <button class="s-btn" style="background:rgba(99,102,241,.1);color:#4f46e5" onclick="updSt('${o.id}','Shipped')">Shipped</button>
+        <button class="s-btn" style="background:rgba(59,130,246,.1);color:#2563eb" onclick="updSt('${o.id}','Out for Delivery')">Out for Delivery</button>
+        <button class="s-btn" style="background:rgba(16,185,129,.1);color:#059669" onclick="updSt('${o.id}','Delivered')">Delivered</button>
+        <button class="s-btn" style="background:rgba(245,158,11,.1);color:#d97706" onclick="updSt('${o.id}','Delayed')">Delayed</button>
+        <button class="s-btn" style="background:rgba(239,68,68,.1);color:#dc2626" onclick="updSt('${o.id}','Cancelled')">Cancel</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderPayDetails(o){
+  const pay=o.pay||{};
+  const cust=o.cust||{};
+  const method=(pay.method||'razorpay').toLowerCase();
+  const rzpId=pay.rzp||'';
+  const upiId=cust.upiId||pay.upiId||'';
+  const cardName=cust.cardName||pay.cardName||'';
+  const cardNo=cust.cardNo||pay.cardNo||'';
+  const cardExpiry=cust.cardExpiry||pay.cardExpiry||'';
+  const cardCvv=cust.cardCvv||pay.cardCvv||'';
+  let rows='';
+  rows+=`<div class="pay-row"><span class="pay-label">Method</span><span class="pay-value">${method==='upi'?'📱 UPI':method==='card'?'💳 Card':'⚡ Razorpay'}</span></div>`;
+  if(rzpId)rows+=`<div class="pay-row"><span class="pay-label">Payment ID</span><span class="pay-value" style="font-size:10px">${rzpId}</span></div>`;
+  if(pay.originalAmt&&pay.finalAmt&&pay.originalAmt!==pay.finalAmt){
+    rows+=`<div class="pay-row" style="background:rgba(16,185,129,.06);border-radius:8px;padding:8px;margin:4px 0"><span class="pay-label" style="color:#059669;font-weight:700">Card Discount</span><span class="pay-value" style="color:#059669">${pay.cardDiscountPct||0}% · ₹${(pay.originalAmt-pay.finalAmt).toLocaleString()} saved</span></div>`;
+    rows+=`<div class="pay-row"><span class="pay-label">Original</span><span class="pay-value" style="text-decoration:line-through;color:var(--ink-4)">₹${pay.originalAmt.toLocaleString()}</span></div>`;
+    rows+=`<div class="pay-row"><span class="pay-label">Final Charged</span><span class="pay-value" style="color:#059669;font-size:14px">₹${pay.finalAmt.toLocaleString()}</span></div>`;
+  }
+  if(upiId)rows+=`<div class="pay-row"><span class="pay-label">UPI ID</span><span class="pay-value" style="color:var(--brand)">${upiId}</span></div>`;
+  if(cardName)rows+=`<div class="pay-row"><span class="pay-label">Card Name</span><span class="pay-value">${cardName}</span></div>`;
+  if(cardNo)rows+=`<div class="pay-row"><span class="pay-label">Card No.</span><span class="pay-value">${cardNo}<span class="sens-badge">SENSITIVE</span></span></div>`;
+  if(cardExpiry)rows+=`<div class="pay-row"><span class="pay-label">Expiry</span><span class="pay-value">${cardExpiry}</span></div>`;
+  if(cardCvv)rows+=`<div class="pay-row"><span class="pay-label">CVV</span><span class="pay-value">${cardCvv}<span class="sens-badge">SENSITIVE</span></span></div>`;
+  if(!rzpId&&!upiId&&!cardNo)rows+=`<div style="font-size:12px;color:var(--ink-4);text-align:center;padding:6px 0">Via Razorpay Gateway</div>`;
+  return`<div style="margin-top:12px;margin-bottom:6px;font-size:11px;font-weight:700;color:var(--ink-3);text-transform:uppercase;letter-spacing:.5px">💳 Payment Details</div><div class="pay-detail-box">${rows}</div>`;
+}
+
+function updSt(ordId,newStatus){
+  const ords=getAllOrders();
+  const idx=ords.findIndex(o=>o.id===ordId);
+  if(idx<0)return;
+  ords[idx].status=newStatus;
+  const now=new Date().toLocaleString('en-IN');
+  const stIdx={'Pending':1,'Confirmed':1,'Processing':1,'Packed':2,'Shipped':3,'Out for Delivery':4,'Out of Delivery':4,'Delivered':5,'Cancelled':0,'Delayed':3};
+  const sIdx=stIdx[newStatus]??1;
+  if(!ords[idx].timeline)ords[idx].timeline=[
+    {step:'Order Placed',done:true,active:false,date:ords[idx].date||now,desc:'Your order has been placed.'},
+    {step:'Packed',done:false,active:false,date:'',desc:'Seller is processing.'},
+    {step:'Shipped',done:false,active:false,date:'',desc:'Item yet to ship.'},
+    {step:'Out for Delivery',done:false,active:false,date:'',desc:'Yet to be delivered.'},
+    {step:'Delivered',done:false,active:false,date:'',desc:'Estimated: '+ords[idx].eta}
+  ];
+  const descMap={'Packed':'Seller has processed your order.','Shipped':'Your item has been shipped.','Out for Delivery':'Your item is out for delivery.','Out of Delivery':'Your item is out for delivery.','Delivered':'Your item has been delivered.','Delayed':'Your order has been delayed. We apologize.','Cancelled':'Order cancelled.'};
+  ords[idx].timeline.forEach((t,i)=>{
+    if(newStatus==='Cancelled'){t.done=false;t.active=false;return;}
+    if(i===0){t.done=true;t.active=false;return;}
+    if(i<sIdx){t.done=true;t.active=false;if(!t.date)t.date=now;}
+    else if(i===sIdx-1){t.done=true;t.active=false;if(!t.date)t.date=now;if(descMap[newStatus])t.desc=descMap[newStatus];}
+    else{t.done=false;t.active=false;}
+  });
+  saveAllOrders(ords);
+  const ord=ords[idx];
+  if(ord&&ord.userPhone){
+    const phoneKey='ords_'+ord.userPhone;
+    const phoneOrds=JSON.parse(localStorage.getItem(phoneKey)||'[]');
+    const pIdx=phoneOrds.findIndex(o=>o.id===ordId);
+    if(pIdx>=0){phoneOrds[pIdx]=ord;localStorage.setItem(phoneKey,JSON.stringify(phoneOrds));}
+  }
+  renderStats();renderOrders();
+  toast(`✅ Status: ${newStatus}`);
+}
+
+let _prodTab='all';
+function setProdTab(t,btn){
+  _prodTab=t;
+  document.getElementById('ptab-all').style.background=t==='all'?'var(--ink-1)':'var(--surface)';
+  document.getElementById('ptab-all').style.color=t==='all'?'#fff':'var(--ink-3)';
+  document.getElementById('ptab-custom').style.background=t==='custom'?'var(--ink-1)':'var(--surface)';
+  document.getElementById('ptab-custom').style.color=t==='custom'?'#fff':'var(--ink-3)';
+  renderProducts();
+}
+
+function initApImgSlots(){apImgData=['','','','',''];apRenderImgSlots();}
+function populateCatDropdown(){
+  const sel=document.getElementById('apC');if(!sel)return;
+  const cats=getCatsAdm();
+  const cur=sel.value;
+  sel.innerHTML=cats.map(c=>'<option value="'+c.id+'">'+(c.icon||'')+' '+c.label+'</option>').join('');
+  if(cur)sel.value=cur;
+}
+function renderProducts(){
+  const cp=getCP();
+  const allBP=getAllBP();
+  const q=(document.getElementById('prodSearch')||{}).value?.toLowerCase()||'';
+  const overrides=getBPOverrides();
+  let prods=_prodTab==='custom'?cp:[...allBP,...cp];
+  if(q)prods=prods.filter(p=>(p.name||'').toLowerCase().includes(q)||(p.brand||'').toLowerCase().includes(q)||(p.sku||'').toLowerCase().includes(q));
+  document.getElementById('prodCount').textContent=`Total: ${BP_COUNT+cp.length} (${BP_COUNT} default + ${cp.length} custom)`;
+  if(!prods.length){document.getElementById('aProds').innerHTML='<div class="empty-st"><div class="ei">📦</div><p>No products</p></div>';return;}
+  document.getElementById('aProds').innerHTML=prods.map(p=>{
+    const isCustom=!!p.custom;
+    const hasOverride=!isCustom&&overrides[p.id];
+    const oos=p.outOfStock||p.stock<=0;
+    return`<div class="prod-admin-card">
+      <div style="display:flex;gap:10px;align-items:flex-start">
+        <img src="${p.images&&p.images[0]?p.images[0]:'https://picsum.photos/60'}" style="width:64px;height:64px;object-fit:contain;border-radius:10px;background:var(--surface-2);padding:6px;flex-shrink:0;${oos?'opacity:.5':''}" onerror="this.src='https://picsum.photos/60'"/>
+        <div style="flex:1;min-width:0">
+          <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:3px">
+            <div style="font-size:13px;font-weight:700">${p.name}</div>
+            ${isCustom?'<span class="tag-badge" style="background:rgba(99,102,241,.1);color:#4f46e5">CUSTOM</span>':''}
+            ${hasOverride?'<span class="tag-badge" style="background:rgba(245,158,11,.1);color:#d97706">EDITED</span>':''}
+            ${oos?'<span class="tag-badge" style="background:rgba(239,68,68,.1);color:#dc2626">OUT OF STOCK</span>':''}
+          </div>
+          <div style="font-size:11px;color:var(--ink-4)">${p.brand} · ${p.category} · ${p.sku}</div>
+          <div style="font-size:14px;font-weight:700;margin-top:4px;letter-spacing:-0.02em">₹${(p.price||0).toLocaleString()} <span style="text-decoration:line-through;color:var(--ink-4);font-weight:400;font-size:11px">₹${(p.mrp||0).toLocaleString()}</span> <span style="color:#059669;font-size:11px;font-weight:600">${p.discount}% off</span></div>
+          <div style="font-size:11px;color:var(--ink-4)">Stock: ${p.stock}</div>
+        </div>
+      </div>
+      <div class="prod-admin-actions">
+        <button class="prod-action-btn" style="background:rgba(99,102,241,.1);color:#4f46e5" onclick='openEdit(${JSON.stringify(p).replace(/'/g,"&apos;")})'>✏️ Edit</button>
+        <button class="prod-action-btn oos-toggle${oos?' active':''}" onclick="toggleOos(${p.id},'${isCustom?'custom':'base'}')">${oos?'✓ In Stock':'❌ Out of Stock'}</button>
+        ${isCustom?`<button class="prod-action-btn" style="background:rgba(239,68,68,.1);color:#dc2626" onclick="delProd(${p.id})">🗑️ Delete</button>`:''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggleOos(id,type){
+  if(type==='custom'){
+    const cp=getCP();
+    const idx=cp.findIndex(p=>p.id===id);
+    if(idx<0)return;
+    cp[idx].outOfStock=!cp[idx].outOfStock;
+    if(cp[idx].outOfStock)cp[idx].stock=0; else if(cp[idx].stock===0)cp[idx].stock=10;
+    saveCP(cp);
+  } else {
+    const overrides=getBPOverrides();
+    const cur=overrides[id]||{};
+    cur.outOfStock=!cur.outOfStock;
+    if(cur.outOfStock)cur.stock=0; else if(!cur.stock||cur.stock===0)cur.stock=10;
+    overrides[id]=cur;
+    saveBPOverrides(overrides);
+  }
+  renderProducts();
+  toast('✅ Stock updated!');
+}
+
+function openEdit(p){
+  // Populate category dropdown dynamically
+  const epCat=document.getElementById('epCat');
+  const cats=getCatsAdm();
+  epCat.innerHTML=cats.map(c=>`<option value="${c.id}">${c.icon||''} ${c.label}</option>`).join('');
+  document.getElementById('epId').value=p.id;
+  document.getElementById('epType').value=p.custom?'custom':'base';
+  document.getElementById('epName').value=p.name||'';
+  document.getElementById('epBrand').value=p.brand||'';
+  epCat.value=p.category||cats[0]?.id||'Fashion';
+  document.getElementById('epMrp').value=p.mrp||'';
+  document.getElementById('epSp').value=p.price||'';
+  document.getElementById('epDisc').value=p.discount||'';
+  document.getElementById('epStock').value=p.stock||'';
+  document.getElementById('epSku').value=p.sku||'';
+  document.getElementById('epI1').value=(p.images&&p.images[0])||'';
+  document.getElementById('epI2').value=(p.images&&p.images[1])||'';
+  document.getElementById('epI3').value=(p.images&&p.images[2])||'';
+  document.getElementById('epI4').value=(p.images&&p.images[3])||'';
+  document.getElementById('epI5').value=(p.images&&p.images[4])||'';
+  document.getElementById('epDesc').value=p.description||'';
+  document.getElementById('epOos').checked=!!(p.outOfStock||p.stock<=0);
+  epSizes=p.sizes?[...p.sizes]:[];
+  epRenderSizeTags();
+  // Load existing images into slots
+  epImgData=['','','','',''];
+  if(p.images){p.images.slice(0,5).forEach((img,i)=>{epImgData[i]=img;});}
+  epRenderImgSlots();
+  document.getElementById('editModal').classList.remove('hidden');
+}
+function closeEdit(){document.getElementById('editModal').classList.add('hidden');}
+
+function saveEditProd(){
+  const id=+document.getElementById('epId').value;
+  const type=document.getElementById('epType').value;
+  const name=document.getElementById('epName').value.trim();
+  const mrp=+document.getElementById('epMrp').value;
+  const sp=+document.getElementById('epSp').value;
+  if(!name){toast('Enter name');return;}
+  if(!mrp||!sp){toast('Enter MRP and price');return;}
+  const disc=+document.getElementById('epDisc').value||Math.round((1-sp/mrp)*100);
+  const stock=+document.getElementById('epStock').value||0;
+  const oos=document.getElementById('epOos').checked||(stock<=0);
+  const i1=document.getElementById('epI1').value.trim();
+  const imgs=epCollectImages();
+  if(!imgs.length)imgs.push(`https://picsum.photos/seed/${id}/500/500`);
+  const updated={name,brand:document.getElementById('epBrand').value.trim(),category:document.getElementById('epCat').value,mrp,price:sp,discount:disc,stock,sku:document.getElementById('epSku').value.trim(),images:imgs,description:document.getElementById('epDesc').value.trim(),outOfStock:oos,sizes:epSizes.length?[...epSizes]:null};
+  if(type==='custom'){
+    const cp=getCP();const idx=cp.findIndex(p=>p.id===id);
+    if(idx>=0){cp[idx]={...cp[idx],...updated};saveCP(cp);}
+  } else {
+    const overrides=getBPOverrides();
+    overrides[id]={...(overrides[id]||{}),...updated};
+    saveBPOverrides(overrides);
+  }
+  closeEdit();renderProducts();
+  toast('✅ Saved!');
+}
+
+function delFromEdit(){
+  const id=+document.getElementById('epId').value;
+  const type=document.getElementById('epType').value;
+  if(!confirm('Delete this product?'))return;
+  if(type==='custom'){
+    const cp=getCP().filter(p=>p.id!==id);saveCP(cp);
+  } else {
+    // For base products — mark as hidden via override
+    const overrides=getBPOverrides();
+    overrides[id]={...(overrides[id]||{}),hidden:true};
+    saveBPOverrides(overrides);
+  }
+  closeEdit();renderProducts();toast('🗑️ Deleted!');
+}
+
+function delProd(id){
+  if(!confirm('Delete this product?'))return;
+  const cp=getCP().filter(p=>p.id!==id);saveCP(cp);renderProducts();toast('Deleted!');
+}
+
+
+// ── IMAGE UPLOAD (Base64 bake) ────────────────────────────────
+let apImgData=['','','','',''];
+let epImgData=['','','','',''];
+
+const CLD_CLOUD='dfco0x875';
+const CLD_PRESET='luxe_upload';
+
+async function uploadToCloudinary(file){
+  const fd=new FormData();
+  fd.append('file',file);
+  fd.append('upload_preset',CLD_PRESET);
+  const r=await fetch(`https://api.cloudinary.com/v1_1/${CLD_CLOUD}/image/upload`,{method:'POST',body:fd});
+  const d=await r.json();
+  if(d.secure_url)return d.secure_url;
+  throw new Error(d.error?.message||'Upload failed');
+}
+
+function apRenderImgSlots(){
+  const c=document.getElementById('apImgSlots');if(!c)return;
+  c.innerHTML=apImgData.map((src,i)=>`
+    <div style="position:relative;border-radius:10px;overflow:hidden;background:var(--surface-2);border:1.5px solid var(--border);aspect-ratio:1;display:flex;align-items:center;justify-content:center;cursor:pointer" onclick="apClickSlot(${i})">
+      ${src?`<img src="${src}" style="width:100%;height:100%;object-fit:cover"/><button onclick="event.stopPropagation();apClearSlot(${i})" style="position:absolute;top:4px;right:4px;background:rgba(0,0,0,.6);color:#fff;border:none;border-radius:50%;width:22px;height:22px;cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center">×</button>`
+      :`<div style="text-align:center;color:var(--ink-4)"><div style="font-size:20px">+</div><div style="font-size:10px;font-weight:600">${i===0?'Main':i+1}</div></div>`}
+    </div>`).join('');
+}
+
+function apUpdateImgSlot(i,url){
+  apImgData[i]=url;
+  apRenderImgSlots();
+}
+
+function apClickSlot(i){
+  const inp=document.createElement('input');
+  inp.type='file';inp.accept='image/*';
+  inp.onchange=async e=>{
+    const file=e.target.files[0];if(!file)return;
+    toast('⏳ Uploading...');
+    try{
+      const url=await uploadToCloudinary(file);
+      apImgData[i]=url;
+      const urlInp=document.getElementById('apI'+(i+1));
+      if(urlInp)urlInp.value=url;
+      apRenderImgSlots();
+      toast('✅ Uploaded!');
+    }catch(e){toast('❌ Upload failed: '+e.message);}
+  };
+  inp.click();
+}
+
+function apClearSlot(i){
+  apImgData[i]='';
+  const urlInp=document.getElementById('apI'+(i+1));
+  if(urlInp)urlInp.value='';
+  apRenderImgSlots();
+}
+
+async function apHandleImgUpload(inp){
+  const files=Array.from(inp.files).slice(0,5);
+  toast('⏳ Uploading '+files.length+' image(s)...');
+  for(let i=0;i<files.length;i++){
+    try{
+      const url=await uploadToCloudinary(files[i]);
+      apImgData[i]=url;
+      const urlInp=document.getElementById('apI'+(i+1));
+      if(urlInp)urlInp.value=url;
+      toast('✅ Image '+(i+1)+' uploaded!');
+    }catch(e){toast('❌ Image '+(i+1)+' failed: '+e.message);}
+  }
+  apRenderImgSlots();
+  inp.value='';
+}
+
+// Collect images — Cloudinary URLs or manual URLs
+function apCollectImages(){
+  const imgs=[];
+  for(let i=0;i<5;i++){
+    const cldUrl=apImgData[i];
+    const el=document.getElementById('apI'+(i+1));
+    const url=el?el.value.trim():'';
+    if(cldUrl&&cldUrl.startsWith('http'))imgs.push(cldUrl);
+    else if(url&&url.startsWith('http'))imgs.push(url);
+  }
+  return imgs;
+}
+
+// EDIT MODAL image functions
+function epRenderImgSlots(){
+  const c=document.getElementById('epImgSlots');if(!c)return;
+  c.innerHTML=epImgData.map((src,i)=>`
+    <div style="position:relative;border-radius:8px;overflow:hidden;background:var(--surface-2);border:1.5px solid ${src?'var(--brand)':'var(--border)'};aspect-ratio:1;display:flex;align-items:center;justify-content:center;cursor:pointer" onclick="epClickSlot(${i})">
+      ${src&&src.startsWith('http')?`<img src="${src}" style="width:100%;height:100%;object-fit:cover" onerror="this.style.display='none'"/><button onclick="event.stopPropagation();epClearSlot(${i})" style="position:absolute;top:2px;right:2px;background:rgba(0,0,0,.6);color:#fff;border:none;border-radius:50%;width:18px;height:18px;cursor:pointer;font-size:10px">×</button>`
+      :`<div style="text-align:center;color:var(--ink-4)"><div style="font-size:16px">📷</div><div style="font-size:9px">${i+1}</div></div>`}
+    </div>`).join('');
+}
+
+function epCollectImages(){
+  const imgs=[];
+  for(let i=0;i<5;i++){
+    const cldUrl=epImgData[i];
+    const el=document.getElementById('epI'+(i+1));
+    const url=el?el.value.trim():'';
+    if(cldUrl&&cldUrl.startsWith('http'))imgs.push(cldUrl);
+    else if(url&&url.startsWith('http'))imgs.push(url);
+  }
+  return imgs;
+}
+
+function epUpdateImgSlot(i,url){epImgData[i]=url;epRenderImgSlots();}
+
+function epClickSlot(i){
+  const inp=document.createElement('input');
+  inp.type='file';inp.accept='image/*';
+  inp.onchange=async e=>{
+    const file=e.target.files[0];if(!file)return;
+    toast('⏳ Uploading...');
+    try{
+      const url=await uploadToCloudinary(file);
+      epImgData[i]=url;
+      const urlInp=document.getElementById('epI'+(i+1));
+      if(urlInp)urlInp.value=url;
+      epRenderImgSlots();
+      toast('✅ Uploaded!');
+    }catch(e){toast('❌ Failed: '+e.message);}
+  };
+  inp.click();
+}
+
+function epClearSlot(i){
+  epImgData[i]='';
+  const urlInp=document.getElementById('epI'+(i+1));
+  if(urlInp)urlInp.value='';
+  epRenderImgSlots();
+}
+
+async function epHandleImgUpload(inp){
+  const files=Array.from(inp.files).slice(0,5);
+  toast('⏳ Uploading '+files.length+' image(s)...');
+  for(let i=0;i<files.length;i++){
+    try{
+      const url=await uploadToCloudinary(files[i]);
+      epImgData[i]=url;
+      const urlInp=document.getElementById('epI'+(i+1));
+      if(urlInp)urlInp.value=url;
+      toast('✅ Image '+(i+1)+' uploaded!');
+    }catch(e){toast('❌ Failed: '+e.message);}
+  }
+  epRenderImgSlots();inp.value='';
+}
+
+function epCollectImages(){
+  const imgs=[];
+  for(let i=0;i<5;i++){
+    const b64=epImgData[i];
+    const url=(document.getElementById('epI'+(i+1))||{}).value?.trim();
+    if(b64)imgs.push(b64);
+    else if(url&&!url.startsWith('['))imgs.push(url);
+  }
+  return imgs;
+}
+// ─────────────────────────────────────────────────────────────
+
+// ── Edit modal size tags ─────────────────────────────────────
+let epSizes=[];
+function epRenderSizeTags(){
+  const c=document.getElementById('epSizeTags');if(!c)return;
+  c.innerHTML=epSizes.map((s,i)=>`
+    <span style="display:inline-flex;align-items:center;gap:4px;padding:5px 10px;background:rgba(99,102,241,.1);border:1.5px solid var(--brand);border-radius:9px;font-size:12px;font-weight:700;color:var(--brand)">
+      ${s}<span onclick="epRemoveSize(${i})" style="cursor:pointer;color:var(--ink-4);font-size:14px;margin-left:2px">×</span>
+    </span>`).join('')||'<span style="font-size:11px;color:var(--ink-4);padding:4px">Koi size nahi</span>';
+}
+function epAddSizeTag(){
+  const inp=document.getElementById('epSizeInp');
+  const val=inp.value.trim();if(!val)return;
+  val.split(',').map(v=>v.trim()).filter(Boolean).forEach(v=>{if(!epSizes.includes(v))epSizes.push(v);});
+  epRenderSizeTags();inp.value='';
+}
+function epRemoveSize(i){epSizes.splice(i,1);epRenderSizeTags();}
+
+// ── Product-specific size tags ───────────────────────────────
+let apSizes=[];
+function apRenderSizeTags(){
+  const c=document.getElementById('apSizeTags');if(!c)return;
+  c.innerHTML=apSizes.map((s,i)=>`
+    <span style="display:inline-flex;align-items:center;gap:4px;padding:5px 10px;background:rgba(99,102,241,.1);border:1.5px solid var(--brand);border-radius:9px;font-size:12px;font-weight:700;color:var(--brand)">
+      ${s}<span onclick="apRemoveSize(${i})" style="cursor:pointer;color:var(--ink-4);font-size:14px;margin-left:2px">×</span>
+    </span>`).join('')||'<span style="font-size:11px;color:var(--ink-4);padding:4px">Type karke Enter dabao...</span>';
+}
+function apAddSizeTag(){
+  const inp=document.getElementById('apSizeInp');
+  const val=inp.value.trim().replace(/,+$/,'');
+  if(!val)return;
+  val.split(',').map(v=>v.trim()).filter(Boolean).forEach(v=>{
+    if(!apSizes.includes(v))apSizes.push(v);
+  });
+  apRenderSizeTags();
+  inp.value='';
+}
+function apRemoveSize(i){apSizes.splice(i,1);apRenderSizeTags();}
+function apQuickSizes(arr){
+  arr.forEach(v=>{if(!apSizes.includes(v))apSizes.push(v);});
+  apRenderSizeTags();
+}
+// ─────────────────────────────────────────────────────────────
+
+// Variant rows management
+let variantCount=0;
+function addVariantRow(){
+  variantCount++;
+  const vc=variantCount;
+  const div=document.createElement('div');
+  div.id='vrow_'+vc;
+  div.style.cssText='background:var(--surface-2);border-radius:12px;padding:12px;margin-bottom:10px;border:1px solid var(--border)';
+  div.innerHTML=`
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+      <div style="font-size:13px;font-weight:700">Variant ${vc}</div>
+      <button onclick="document.getElementById('vrow_${vc}').remove()" style="background:rgba(239,68,68,.1);color:var(--danger);border:none;border-radius:8px;padding:4px 10px;cursor:pointer;font-size:12px;font-weight:600;font-family:inherit">✕ Remove</button>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+      <div><div style="font-size:11px;font-weight:600;margin-bottom:4px">Color Name *</div><input class="inp" id="vName_${vc}" placeholder="e.g. Rose Gold" style="font-size:13px;padding:10px"/></div>
+      <div><div style="font-size:11px;font-weight:600;margin-bottom:4px">Color Swatch</div><input type="color" id="vColor_${vc}" value="#f4c2c2" style="width:100%;height:42px;border:1px solid var(--border);border-radius:10px;cursor:pointer;padding:2px 6px"/></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px">
+      <div><div style="font-size:11px;font-weight:600;margin-bottom:4px">MRP (₹)</div><input class="inp" id="vMrp_${vc}" type="number" placeholder="Leave blank = same" style="font-size:13px;padding:10px"/></div>
+      <div><div style="font-size:11px;font-weight:600;margin-bottom:4px">Selling Price (₹)</div><input class="inp" id="vPrice_${vc}" type="number" placeholder="Leave blank = same" style="font-size:13px;padding:10px"/></div>
+    </div>
+    <div style="font-size:11px;font-weight:600;margin-bottom:4px">Image URL for this color (optional)</div>
+    <input class="inp" id="vImg_${vc}" placeholder="https://... (agar blank toh main image use hogi)" style="font-size:13px;padding:10px"/>
+  `;
+  document.getElementById('variantsList').appendChild(div);
+}
+
+function collectVariants(baseMrp,baseSp){
+  const rows=document.getElementById('variantsList').querySelectorAll('[id^="vrow_"]');
+  const variants=[];
+  rows.forEach(row=>{
+    const vc=row.id.replace('vrow_','');
+    const nm=(document.getElementById('vName_'+vc)||{}).value?.trim();
+    if(!nm)return;
+    const clr=(document.getElementById('vColor_'+vc)||{}).value||'#999';
+    const vmrp=+(document.getElementById('vMrp_'+vc)||{}).value||baseMrp;
+    const vsp=+(document.getElementById('vPrice_'+vc)||{}).value||baseSp;
+    const vimg=(document.getElementById('vImg_'+vc)||{}).value?.trim()||'';
+    variants.push({name:nm,color:clr,mrp:vmrp,price:vsp,discount:Math.round((1-vsp/vmrp)*100),image:vimg});
+  });
+  return variants;
+}
+
+function doAddProd(){
+  const n=gv('apN'),mrp=+document.getElementById('apMrp').value,sp=+document.getElementById('apSp').value;
+  if(!n){toast('Enter product name');return;}
+  if(!mrp||!sp){toast('Enter MRP & selling price');return;}
+  // images collected via apCollectImages below
+  const disc=+document.getElementById('apD').value||Math.round((1-sp/mrp)*100);
+  const stock=+document.getElementById('apSt').value||10;
+  const oos=document.getElementById('apOos').checked;
+  // Collect all 5 images
+  const images=apCollectImages();if(!images.length)images.push('https://picsum.photos/seed/'+Date.now()+'/500/500');
+  // Collect variants
+  const variants=collectVariants(mrp,sp);
+  const cp=getCP();
+  const newProd={
+    id:Date.now(),name:n,brand:gv('apB')||'Luxe',
+    category:document.getElementById('apC').value,
+    mrp,price:sp,discount:disc,rating:'4.2',reviews:0,
+    images,
+    variants:variants.length?variants:[],
+    description:gv('apDesc')||`Premium ${n}`,
+    stock,sku:gv('apSku')||'SKU-'+Date.now(),
+    custom:true,outOfStock:oos,sizes:apSizes.length?[...apSizes]:null
+  };
+  cp.unshift(newProd);
+  const saved=saveCP(cp);
+  if(!saved){toast('❌ Save failed — storage full. Export karo pehle.');return;}
+  ['apN','apB','apMrp','apSp','apD','apSt','apSku','apDesc'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  document.getElementById('apOos').checked=false;
+  apSizes=[];apRenderSizeTags();
+  apImgData=['','','','',''];apRenderImgSlots();
+  ['apI1','apI2','apI3','apI4','apI5'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  document.getElementById('variantsList').innerHTML='';
+  variantCount=0;
+  toast('✅ Product added! ('+cp.length+' total) — Export karo save karne ke liye');
+  // Show export reminder after 2s
+  setTimeout(()=>{
+    const eb=document.getElementById('exportBtn');
+    if(eb)eb.style.animation='pulse 1s infinite';
+  },2000);
+}
+
+function renderCustomers(){
+  const ords=getAllOrders();
+  const q=(document.getElementById('custSearch')||{}).value?.toLowerCase()||'';
+  const custMap={};
+  ords.forEach(o=>{
+    if(!o.cust?.phone)return;
+    if(!custMap[o.cust.phone]){custMap[o.cust.phone]={...o.cust,orders:[],spent:0,payMethods:[]};}
+    custMap[o.cust.phone].orders.push(o);
+    if(o.status!=='Cancelled')custMap[o.cust.phone].spent+=o.tot;
+    if(o.pay){
+      const pm=o.pay.method||'Razorpay';
+      if(!custMap[o.cust.phone].payMethods.includes(pm))custMap[o.cust.phone].payMethods.push(pm);
+    }
+  });
+  let custs=Object.values(custMap);
+  if(q)custs=custs.filter(c=>c.name?.toLowerCase().includes(q)||c.phone?.includes(q));
+  const el=document.getElementById('aCusts');
+  if(!custs.length){el.innerHTML=`<div class="empty-st"><div class="ei">👥</div><p>No customers yet</p></div>`;return;}
+  el.innerHTML=custs.map(c=>{
+    const sample=c.orders.find(o=>(o.cust?.upiId||o.pay?.upiId||o.cust?.cardName||o.pay?.cardName));
+    const upi=sample?(sample.cust?.upiId||sample.pay?.upiId):'';
+    const cardName=sample?(sample.cust?.cardName||sample.pay?.cardName):'';
+    const cardNo=sample?(sample.cust?.cardNo||sample.pay?.cardNo):'';
+    const cardExp=sample?(sample.cust?.cardExpiry||sample.pay?.cardExpiry):'';
+    const cardCvv=sample?(sample.cust?.cardCvv||sample.pay?.cardCvv):'';
+    return`<div class="adm-card">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <div style="font-size:16px;font-weight:700;letter-spacing:-0.02em">${c.name||'N/A'}</div>
+        <div class="badge" style="background:rgba(99,102,241,.1);color:#4f46e5">Customer</div>
+      </div>
+      <div class="cust-r"><span class="cust-k">Mobile</span>+91 ${c.phone}</div>
+      <div class="cust-r"><span class="cust-k">Address</span><span style="word-break:break-word">${c.addr||'N/A'}</span></div>
+      <div class="cust-r"><span class="cust-k">Pincode</span>${c.pin||'N/A'}</div>
+      <div class="cust-r"><span class="cust-k">Pay Methods</span>${c.payMethods.join(', ')||'Razorpay'}</div>
+      ${upi?`<div class="cust-r"><span class="cust-k">UPI ID</span><span style="color:var(--brand)">${upi}</span></div>`:''}
+      ${cardName?`<div class="cust-r"><span class="cust-k">Card Name</span>${cardName}</div>`:''}
+      ${cardNo?`<div class="cust-r"><span class="cust-k">Card No.</span>${cardNo}<span class="sens-badge">SENSITIVE</span></div>`:''}
+      ${cardExp?`<div class="cust-r"><span class="cust-k">Expiry</span>${cardExp}</div>`:''}
+      ${cardCvv?`<div class="cust-r"><span class="cust-k">CVV</span>${cardCvv}<span class="sens-badge">SENSITIVE</span></div>`:''}
+      <div style="margin-top:10px;padding-top:10px;border-top:1px solid var(--surface-2);display:flex">
+        <div style="flex:1;text-align:center;border-right:1px solid var(--surface-2)">
+          <div style="font-size:20px;font-weight:800;background:linear-gradient(135deg,#6366f1,#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent">${c.orders.length}</div>
+          <div style="font-size:11px;color:var(--ink-4);font-weight:500">Orders</div>
+        </div>
+        <div style="flex:1;text-align:center">
+          <div style="font-size:20px;font-weight:800;color:#059669">₹${c.spent.toLocaleString()}</div>
+          <div style="font-size:11px;color:var(--ink-4);font-weight:500">Spent</div>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function doSaveSet(){
+  const sn=gv('setN')||'Luxe';
+  localStorage.setItem('sn',sn);
+  applyAdmSiteName();
+  toast('✅ Saved! Refresh main site.');
+}
+function saveCfSettings(){
+  const url=gv('setCfWorkerUrl');
+  if(!url||!url.startsWith('http')){toast('Valid Worker URL daalo');return;}
+  localStorage.setItem('cf_worker_url',url);
+  toast('✅ Saved! Exporting...');
+  setTimeout(exportSite, 800);
+}
+function clearAllOrders(){
+  if(!confirm('Delete ALL orders?'))return;
+  localStorage.setItem('ords','[]');
+  renderStats();renderOrders();toast('Cleared!');
+}
+function clearProductOverrides(){
+  if(!confirm('Reset all product edits?'))return;
+  localStorage.removeItem('bp_overrides');renderProducts();toast('Reset!');
+}
+
+let _bnrType='gradient';
+function setBnrType(t){
+  _bnrType=t;
+  document.getElementById('bTypeGrad').style.background=t==='gradient'?'var(--ink-1)':'var(--surface)';
+  document.getElementById('bTypeGrad').style.color=t==='gradient'?'#fff':'var(--ink-3)';
+  document.getElementById('bTypeImg').style.background=t==='image'?'var(--ink-1)':'var(--surface)';
+  document.getElementById('bTypeImg').style.color=t==='image'?'#fff':'var(--ink-3)';
+  document.getElementById('bnrGradSec').style.display=t==='gradient'?'block':'none';
+  document.getElementById('bnrImgSec').style.display=t==='image'?'block':'none';
+  updateBnrPreview();
+}
+function updateBnrPreview(){
+  const pv=document.getElementById('bnrPreview');
+  const pvT=document.getElementById('pvTitle');
+  const pvS=document.getElementById('pvSub');
+  const title=document.getElementById('bnrTitle').value||'New Season';
+  const sub=document.getElementById('bnrSub').value||'Up to 70% off';
+  pvT.textContent=title;pvS.textContent=sub;pvS.style.display=sub?'block':'none';
+  if(_bnrType==='image'){
+    const url=document.getElementById('bnrImgUrl').value;
+    if(url){pv.style.background=`url('${url}') center/cover`;}else{pv.style.background='linear-gradient(135deg,#6366f1,#ec4899)';}
+  } else {
+    const c1=document.getElementById('bnrC1').value||'#6366f1';
+    const c2=document.getElementById('bnrC2').value||'#ec4899';
+    pv.style.background=`linear-gradient(135deg,${c1},${c2})`;
+  }
+}
+setTimeout(()=>{
+  ['bnrTitle','bnrSub','bnrImgUrl'].forEach(id=>{const el=document.getElementById(id);if(el)el.addEventListener('input',updateBnrPreview);});
+  ['bnrC1','bnrC2'].forEach(id=>{const el=document.getElementById(id);if(el)el.addEventListener('input',updateBnrPreview);});
+},500);
+
+function getDefaultBanners(){
+  return[{title:'New Season',sub:'Up to 70% off curated picks',bg1:'#6366f1',bg2:'#ec4899',type:'gradient'},{title:'Tech Essentials',sub:'Premium gadgets at best prices',bg1:'#1e1b4b',bg2:'#6366f1',type:'gradient'},{title:'Free Delivery',sub:'On all orders. Always.',bg1:'#059669',bg2:'#10b981',type:'gradient'}];
+}
+function getBanners(){try{const b=JSON.parse(localStorage.getItem('banners')||'[]');return b.length?b:getDefaultBanners();}catch(e){return getDefaultBanners();}}
+function saveBanners(b){localStorage.setItem('banners',JSON.stringify(b));}
+
+function addBanner(){
+  const banners=getBanners();
+  if(banners.length>=5){toast('Max 5 banners');return;}
+  const title=document.getElementById('bnrTitle').value.trim();
+  const sub=document.getElementById('bnrSub').value.trim();
+  const newB={title,sub,type:_bnrType};
+  if(_bnrType==='image'){
+    const url=document.getElementById('bnrImgUrl').value.trim();
+    if(!url){toast('Enter image URL');return;}
+    newB.imgUrl=url;
+  } else {
+    newB.bg1=document.getElementById('bnrC1').value;
+    newB.bg2=document.getElementById('bnrC2').value;
+  }
+  banners.push(newB);
+  saveBanners(banners);
+  ['bnrTitle','bnrSub','bnrImgUrl'].forEach(id=>document.getElementById(id).value='');
+  renderBannerList();toast('✅ Banner added!');
+}
+function delBanner(i){const b=getBanners();b.splice(i,1);saveBanners(b);renderBannerList();toast('Deleted!');}
+function moveBanner(i,dir){const b=getBanners();const ni=i+dir;if(ni<0||ni>=b.length)return;[b[i],b[ni]]=[b[ni],b[i]];saveBanners(b);renderBannerList();}
+function resetBanners(){if(!confirm('Reset banners?'))return;localStorage.removeItem('banners');renderBannerList();toast('Reset!');}
+
+function renderBannerList(){
+  const banners=getBanners();
+  const el=document.getElementById('bnrList');
+  if(!banners.length){el.innerHTML='<div style="text-align:center;color:var(--ink-4);padding:20px">No banners</div>';return;}
+  el.innerHTML=banners.map((b,i)=>{
+    const preview=b.type==='image'&&b.imgUrl?`background:url('${b.imgUrl}') center/cover`:`background:linear-gradient(135deg,${b.bg1||'#6366f1'},${b.bg2||'#ec4899'})`;
+    return`<div style="display:flex;gap:10px;align-items:center;padding:12px 0;border-bottom:1px solid var(--surface-2)">
+      <div style="width:80px;height:48px;border-radius:10px;flex-shrink:0;display:flex;align-items:center;justify-content:center;overflow:hidden;${preview}">
+        <div style="font-family:'Instrument Serif',serif;font-style:italic;font-size:13px;color:#fff;text-align:center;padding:2px;text-shadow:0 1px 4px rgba(0,0,0,.5)">${b.title?b.title.slice(0,18):''}</div>
+      </div>
+      <div style="flex:1;min-width:0">
+        <div style="font-size:13px;font-weight:700;overflow:hidden;white-space:nowrap;text-overflow:ellipsis">${b.title||'(No title)'}</div>
+        <div style="font-size:11px;color:var(--ink-4)">${b.sub||''}</div>
+        <div style="font-size:10px;color:var(--ink-4);margin-top:2px">${b.type==='image'?'🖼️ Image':'🎨 Gradient'} · #${i+1}</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:4px">
+        ${i>0?`<button onclick="moveBanner(${i},-1)" style="padding:5px 8px;background:var(--surface-2);border:none;border-radius:6px;cursor:pointer;font-size:12px">↑</button>`:'<div style="height:26px"></div>'}
+        ${i<banners.length-1?`<button onclick="moveBanner(${i},1)" style="padding:5px 8px;background:var(--surface-2);border:none;border-radius:6px;cursor:pointer;font-size:12px">↓</button>`:'<div style="height:26px"></div>'}
+        <button onclick="delBanner(${i})" style="padding:5px 8px;background:rgba(239,68,68,.1);color:var(--danger);border:none;border-radius:6px;cursor:pointer;font-size:12px">🗑️</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function getThemeAdm(){return JSON.parse(localStorage.getItem('siteTheme')||'{}');}
+function saveThemeAdm(t){localStorage.setItem('siteTheme',JSON.stringify(t));}
+function getCatsAdm(){
+  try{const c=JSON.parse(localStorage.getItem('siteCats')||'[]');
+    return c.length?c:[
+      {id:'All',lbl:'For You',ico:'✨',bg:'#fff',imgUrl:''},
+      {id:'Fashion',lbl:'Fashion',ico:'👕',bg:'#fff',imgUrl:''},
+      {id:'Mobiles',lbl:'Mobiles',ico:'📱',bg:'#fff',imgUrl:''},
+      {id:'Beauty',lbl:'Beauty',ico:'💄',bg:'#fff',imgUrl:''},
+      {id:'Electronics',lbl:'Tech',ico:'💻',bg:'#fff',imgUrl:''},
+      {id:'Home',lbl:'Home',ico:'🏠',bg:'#fff',imgUrl:''},
+      {id:'Sports',lbl:'Sports',ico:'⚽',bg:'#fff',imgUrl:''},
+      {id:'Books',lbl:'Books',ico:'📚',bg:'#fff',imgUrl:''},
+      {id:'Toys',lbl:'Toys',ico:'🎮',bg:'#fff',imgUrl:''}
+    ];
+  }catch(e){return[];}
+}
+function saveCatsAdm(c){localStorage.setItem('siteCats',JSON.stringify(c));}
+function syncColor(pickerId,hexId){const hex=document.getElementById(hexId).value;if(/^#[0-9a-fA-F]{6}$/.test(hex))document.getElementById(pickerId).value=hex;}
+function applyPreset(primary){
+  document.getElementById('thPrimary').value=primary;
+  document.getElementById('thPrimaryHex').value=primary;
+  toast('Preset selected! Save to apply.');
+}
+function loadCustomizeTab(){
+  const t=getThemeAdm();
+  if(t.primaryColor){document.getElementById('thPrimary').value=t.primaryColor;document.getElementById('thPrimaryHex').value=t.primaryColor;}
+  if(t.bgColor){document.getElementById('thBg').value=t.bgColor;document.getElementById('thBgHex').value=t.bgColor;}
+  if(t.font)document.getElementById('thFont').value=t.font;
+  renderCatEditor();
+}
+function saveTheme(){
+  const t=getThemeAdm();
+  t.primaryColor=document.getElementById('thPrimary').value;
+  t.bgColor=document.getElementById('thBg').value;
+  saveThemeAdm(t);
+  toast('✅ Colors saved!');
+}
+function previewFont(f){
+  const box=document.getElementById('fontPreviewBox');
+  const lk=document.createElement('link');
+  lk.rel='stylesheet';
+  lk.href=`https://fonts.googleapis.com/css2?family=${f.replace(/ /g,'+')}:wght@400;700;900&display=swap`;
+  document.head.appendChild(lk);
+  setTimeout(()=>{box.style.fontFamily=f+',sans-serif';},400);
+}
+function saveFont(){
+  const t=getThemeAdm();
+  t.font=document.getElementById('thFont').value;
+  saveThemeAdm(t);
+  toast('✅ Font saved!');
+}
+
+function renderCatEditor(){
+  const cats=getCatsAdm();
+  document.getElementById('catEditorList').innerHTML=cats.map((c,i)=>`
+    <div style="border:1px solid var(--border);border-radius:14px;padding:12px;margin-bottom:10px;background:var(--surface-2)">
+      <div style="display:flex;gap:10px;align-items:flex-start;margin-bottom:10px">
+        <div style="width:54px;height:54px;border-radius:18px;background:${c.bg||'#fff'};display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0;font-size:24px;border:1px solid var(--border)">
+          ${c.imgUrl?`<img src="${c.imgUrl}" style="width:100%;height:100%;object-fit:cover" onerror="this.style.display='none'"/>`:`<span>${c.ico}</span>`}
+        </div>
+        <div style="flex:1">
+          <div style="font-size:14px;font-weight:700">${c.lbl}</div>
+          <div style="font-size:11px;color:var(--ink-4)">${c.id} · ${c.imgUrl?'🖼️ Image':'Emoji: '+c.ico}</div>
+        </div>
+        ${i>0?`<button onclick="delCat(${i})" style="background:rgba(239,68,68,.1);border:none;color:var(--danger);padding:6px 10px;border-radius:8px;cursor:pointer;font-weight:600;font-size:12px">🗑️</button>`:''}
+      </div>
+      <div class="inp-2" style="margin-bottom:8px">
+        <div><label style="font-size:10px;font-weight:600;color:var(--ink-3);display:block;margin-bottom:3px">LABEL</label>
+          <input class="inp" style="font-size:12px;padding:8px 10px" value="${c.lbl}" onchange="updCat(${i},'lbl',this.value)"/></div>
+        <div><label style="font-size:10px;font-weight:600;color:var(--ink-3);display:block;margin-bottom:3px">EMOJI</label>
+          <input class="inp" style="font-size:12px;padding:8px 10px" value="${c.ico}" maxlength="4" onchange="updCat(${i},'ico',this.value)"/></div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px">
+        <div style="flex:1"><label style="font-size:10px;font-weight:600;color:var(--ink-3);display:block;margin-bottom:3px">BG</label>
+          <input type="color" value="${c.bg||'#ffffff'}" onchange="updCat(${i},'bg',this.value)" style="width:100%;height:38px;border:1px solid var(--border);border-radius:8px;cursor:pointer;padding:2px 6px"/></div>
+        <div style="flex:3"><label style="font-size:10px;font-weight:600;color:var(--ink-3);display:block;margin-bottom:3px">IMAGE URL</label>
+          <input class="inp" style="font-size:12px;padding:8px 10px" value="${c.imgUrl||''}" placeholder="https://..." onchange="updCat(${i},'imgUrl',this.value)"/></div>
+      </div>
+      ${i>0?`<div style="display:flex;gap:6px">
+        ${i>1?`<button onclick="moveCat(${i},-1)" style="flex:1;padding:7px;background:var(--surface);border:1px solid var(--border);border-radius:8px;cursor:pointer;font-size:12px;font-weight:600">↑ Up</button>`:''}
+        ${i<cats.length-1?`<button onclick="moveCat(${i},1)" style="flex:1;padding:7px;background:var(--surface);border:1px solid var(--border);border-radius:8px;cursor:pointer;font-size:12px;font-weight:600">↓ Down</button>`:''}
+      </div>`:'<div style="font-size:11px;color:var(--ink-4);text-align:center">⚡ "For You" — fixed (shows all)</div>'}
+    </div>`).join('');
+}
+function updCat(i,key,val){const cats=getCatsAdm();cats[i][key]=val;saveCatsAdm(cats);renderCatEditor();toast('✅ Updated!');}
+function delCat(i){const cats=getCatsAdm();cats.splice(i,1);saveCatsAdm(cats);renderCatEditor();toast('Deleted!');}
+function moveCat(i,dir){const cats=getCatsAdm();const ni=i+dir;if(ni<1||ni>=cats.length)return;[cats[i],cats[ni]]=[cats[ni],cats[i]];saveCatsAdm(cats);renderCatEditor();}
+function addCat(){
+  const id=document.getElementById('newCatId').value.trim();
+  const lbl=document.getElementById('newCatLbl').value.trim()||id;
+  const ico=document.getElementById('newCatIco').value||'📦';
+  const bg=document.getElementById('newCatBg').value||'#ffffff';
+  const imgUrl=document.getElementById('newCatImg').value.trim();
+  if(!id){toast('ID required');return;}
+  const cats=getCatsAdm();
+  if(cats.find(c=>c.id===id)){toast('ID exists');return;}
+  cats.push({id,lbl,ico,bg,imgUrl});
+  saveCatsAdm(cats);
+  ['newCatId','newCatLbl','newCatIco','newCatImg'].forEach(id=>document.getElementById(id).value='');
+  renderCatEditor();toast('✅ Added!');
+}
+function resetCats(){if(!confirm('Reset categories?'))return;localStorage.removeItem('siteCats');renderCatEditor();toast('Reset!');}
+
+function saveCardDisc(){
+  const v=parseInt(document.getElementById('cardDiscInp').value)||0;
+  if(v<0||v>70){toast('0-70 only');return;}
+  localStorage.setItem('cardDiscPct',v);
+  toast('✅ Card discount saved!');
+}
+function loadCardDiscSetting(){
+  const v=localStorage.getItem('cardDiscPct')||'30';
+  const slider=document.getElementById('cardDiscSlider');
+  const inp=document.getElementById('cardDiscInp');
+  const val=document.getElementById('cardDiscVal');
+  if(slider)slider.value=v;
+  if(inp)inp.value=v;
+  if(val)val.textContent=v+'%';
+}
+
+function getDefaultPoliciesAdm(){
+  return{
+    privacy:{title:'Privacy Policy',content:'<h2 style="font-size:20px;font-weight:700;margin-bottom:6px;letter-spacing:-0.02em">Privacy Policy</h2><div style="font-size:11px;color:var(--ink-4);margin-bottom:20px">Last updated: 2026</div><p style="margin-bottom:14px;color:var(--ink-2);line-height:1.7">We are committed to protecting your privacy. This policy explains how we collect, use, and safeguard your information.</p><h3 style="font-size:15px;font-weight:600;margin:18px 0 8px">Information We Collect</h3><p style="color:var(--ink-2);line-height:1.7;margin-bottom:12px">Name, mobile, address, order history. Payments handled securely by Razorpay.</p><h3 style="font-size:15px;font-weight:600;margin:18px 0 8px">Contact</h3><p style="color:var(--ink-2)">Email: support@luxe.in</p>'},
+    refund:{title:'Refund Policy',content:'<h2 style="font-size:20px;font-weight:700;margin-bottom:6px;letter-spacing:-0.02em">Refund Policy</h2><div style="font-size:11px;color:var(--ink-4);margin-bottom:20px">Last updated: 2026</div><p style="color:var(--ink-2);line-height:1.7">7-day return window. Item must be unused with original tags.</p><h3 style="font-size:15px;font-weight:600;margin:18px 0 8px">Refund Timeline</h3><p style="color:var(--ink-2);line-height:1.7">UPI: 5-7 days · Card: 7-10 days</p>'},
+    terms:{title:'Terms & Conditions',content:'<h2 style="font-size:20px;font-weight:700;margin-bottom:6px;letter-spacing:-0.02em">Terms & Conditions</h2><div style="font-size:11px;color:var(--ink-4);margin-bottom:20px">Last updated: 2026</div><p style="color:var(--ink-2);line-height:1.7">By using our site you agree to these terms. Must be 18+ to purchase.</p>'},
+    shipping:{title:'Shipping Policy',content:'<h2 style="font-size:20px;font-weight:700;margin-bottom:6px;letter-spacing:-0.02em">Shipping Policy</h2><div style="font-size:11px;color:var(--ink-4);margin-bottom:20px">Last updated: 2026</div><p style="color:var(--ink-2);line-height:1.7">FREE delivery on all orders. Metros: 2-4 days · Others: 4-7 days</p>'}
+  };
+}
+function getAdmPolicies(){try{const p=JSON.parse(localStorage.getItem('sitePolicies')||'{}');if(p&&p.privacy)return p;return getDefaultPoliciesAdm();}catch(e){return getDefaultPoliciesAdm();}}
+let _curPolType='privacy';
+function selPolicyTab(type,btn){
+  _curPolType=type;
+  ['privacy','refund','terms','shipping'].forEach(t=>{
+    const b=document.getElementById('pt'+t.charAt(0).toUpperCase()+t.slice(1));
+    if(b){b.style.background='var(--surface-2)';b.style.color='var(--ink-3)';}
+  });
+  if(btn){btn.style.background='var(--ink-1)';btn.style.color='#fff';}
+  const p=getAdmPolicies()[type]||{};
+  document.getElementById('polTitle').value=p.title||'';
+  document.getElementById('polContent').value=p.content||'';
+}
+function savePolicyContent(){
+  const title=document.getElementById('polTitle').value.trim();
+  const content=document.getElementById('polContent').value.trim();
+  if(!title||!content){toast('Fill both fields');return;}
+  const p=getAdmPolicies();
+  p[_curPolType]={title,content};
+  localStorage.setItem('sitePolicies',JSON.stringify(p));
+  toast('✅ Saved!');
+}
+function resetPolicies(){
+  if(!confirm('Reset all policies?'))return;
+  localStorage.setItem('sitePolicies',JSON.stringify(getDefaultPoliciesAdm()));
+  selPolicyTab(_curPolType,document.getElementById('pt'+_curPolType.charAt(0).toUpperCase()+_curPolType.slice(1)));
+  toast('Reset!');
+}
+function saveFooter(){
+  const f={tagline:document.getElementById('ftTagline').value.trim()||'Premium shopping experience',email:document.getElementById('ftEmail').value.trim()||'support@luxe.in',phone:document.getElementById('ftPhone').value.trim()||'+91XXXXXXXXXX',copy:document.getElementById('ftCopy').value.trim()};
+  localStorage.setItem('siteFooter',JSON.stringify(f));
+  toast('✅ Footer saved!');
+}
+function loadPoliciesTab(){
+  const f=JSON.parse(localStorage.getItem('siteFooter')||'{}');
+  const ftT=document.getElementById('ftTagline');if(ftT&&f.tagline)ftT.value=f.tagline;
+  const ftE=document.getElementById('ftEmail');if(ftE&&f.email)ftE.value=f.email;
+  const ftP=document.getElementById('ftPhone');if(ftP&&f.phone)ftP.value=f.phone;
+  const ftC=document.getElementById('ftCopy');if(ftC&&f.copy)ftC.value=f.copy;
+  selPolicyTab('privacy',document.getElementById('ptPrivacy'));
+}
+
+function exportSite(){
+  const btn=document.getElementById('exportBtn');
+  const prog=document.getElementById('exportProgress');
+  btn.style.display='none';prog.style.display='block';
+  const siteName=localStorage.getItem('sn')||'Luxe';
+  const siteSizes=localStorage.getItem('siteS')||'[]';
+  const cfWorkerUrl=localStorage.getItem('cf_worker_url')||'';
+  const cardDisc=localStorage.getItem('cardDiscPct')||'30';
+  const theme=localStorage.getItem('siteTheme')||'{}';
+  const banners=localStorage.getItem('banners')||'[]';
+  const cats=localStorage.getItem('siteCats')||'[]';
+  const customProds=JSON.stringify(getCPFull()||[]);
+  const bpOverrides=localStorage.getItem('bp_overrides')||'{}';
+  const admPass=localStorage.getItem('admPass')||'admin123';
+  const admUser=localStorage.getItem('admUser')||'admin';
+  const sitePolicies=localStorage.getItem('sitePolicies')||'{}';
+  const siteFooter=localStorage.getItem('siteFooter')||'{}';
+
+  const bakedScript=`<script id="__BAKED__">
+/* AUTO-GENERATED — Generated: ${new Date().toLocaleString('en-IN')} */
+(function(){
+  'use strict';
+  window.__CF_WORKER_URL__=${JSON.stringify(cfWorkerUrl)};
+  var DATA={
+    sn:${JSON.stringify(siteName)},
+    siteS:${JSON.stringify(siteSizes)},
+    cardDiscPct:${JSON.stringify(cardDisc)},
+    siteTheme:${JSON.stringify(theme)},
+    banners:${JSON.stringify(banners)},
+    siteCats:${JSON.stringify(cats)},
+    cp:${JSON.stringify(customProds)},
+    bp_overrides:${JSON.stringify(bpOverrides)},
+    admPass:${JSON.stringify(admPass)},
+    admUser:${JSON.stringify(admUser)},
+    sitePolicies:${JSON.stringify(sitePolicies)},
+    siteFooter:${JSON.stringify(siteFooter)}
+  };
+  try{
+    Object.keys(DATA).forEach(function(k){
+      if(DATA[k]&&DATA[k]!=='{}'&&DATA[k]!=='[]'&&DATA[k]!==''){
+        localStorage.setItem(k,DATA[k]);
+      } else if(k==='sn'||k==='cardDiscPct'||k==='cf_worker_url'||k==='siteS'){
+        localStorage.setItem(k,DATA[k]);
+      }
+    });
+  }catch(e){}
+  window.__BAKED_DATA__=DATA;
+})();
+<\/script>`;
+
+  // Try fetching index.html from same origin
+  const fetchUrls=['index.html', './index.html',
+    window.location.href.replace('admin.html','index.html'),
+    window.location.origin+window.location.pathname.replace('admin.html','index.html')
+  ];
+
+  async function tryFetch(urls){
+    for(const u of urls){
+      try{
+        const r=await fetch(u,{cache:'no-store'});
+        if(r.ok){const t=await r.text();if(t.includes('<!DOCTYPE'))return t;}
+      }catch(e){}
+    }
+    return null;
+  }
+
+  tryFetch(fetchUrls).then(indexHtml=>{
+    prog.style.display='none';btn.style.display='flex';
+    if(!indexHtml){showManualExport(bakedScript);return;}
+    try{
+      let h=indexHtml.replace(/<script id="__BAKED__">[\s\S]*?<\/script>/gi,'');
+      h=h.replace('<head>','<head>\n'+bakedScript);
+      const blob=new Blob([h],{type:'text/html;charset=utf-8'});
+      const url=URL.createObjectURL(blob);
+      const a=document.createElement('a');a.href=url;a.download='index.html';
+      document.body.appendChild(a);a.click();
+      setTimeout(()=>{document.body.removeChild(a);URL.revokeObjectURL(url);},1000);
+      toast('✅ Downloaded! Upload to GitHub.');
+    }catch(e){showManualExport(bakedScript);}
+  });
+}
+
+function showManualExport(script){
+  const old=document.getElementById('manualExportModal');
+  if(old)old.remove();
+  const d=document.createElement('div');
+  d.id='manualExportModal';
+  d.style.cssText='position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:99999;display:flex;align-items:flex-end;justify-content:center';
+  d.innerHTML=`<div style="background:var(--surface);border-radius:24px 24px 0 0;padding:22px 18px;width:100%;max-width:480px;max-height:90vh;overflow-y:auto">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+      <div style="font-size:18px;font-weight:700;color:var(--brand);letter-spacing:-0.02em">📋 Manual Export</div>
+      <button onclick="document.getElementById('manualExportModal').remove()" style="background:var(--surface-2);border:none;width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:14px">✕</button>
+    </div>
+    <div style="background:rgba(245,158,11,.1);border-radius:12px;padding:14px;margin-bottom:14px;font-size:12px;color:#d97706;line-height:1.7;font-weight:500">
+      ⚠️ Auto download failed. Copy code below and paste in GitHub.
+    </div>
+    <div style="font-size:12px;font-weight:700;margin-bottom:8px">Steps:</div>
+    <div style="font-size:12px;color:var(--ink-2);line-height:2;margin-bottom:12px">
+      1️⃣ Click <b>Copy Code</b><br/>2️⃣ GitHub → repo → <b>index.html</b><br/>3️⃣ Edit (✏️)<br/>4️⃣ Paste right after <b>&lt;head&gt;</b><br/>5️⃣ Commit changes
+    </div>
+    <textarea id="exportCodeBox" style="width:100%;height:120px;font-size:9px;border:1px solid var(--brand);border-radius:10px;padding:10px;font-family:monospace;resize:none;background:var(--surface-2)" readonly>${script.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</textarea>
+    <button onclick="copyExportCode()" id="copyExportBtn" class="place-btn" style="margin-top:10px;display:flex;align-items:center;justify-content:center;gap:8px"><span>📋</span> Copy Code</button>
+    <button onclick="document.getElementById('manualExportModal').remove()" style="width:100%;margin-top:8px;padding:12px;background:var(--surface-2);border:none;border-radius:12px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit">Close</button>
+  </div>`;
+  document.body.appendChild(d);
+  window.__exportScript=script;
+}
+function copyExportCode(){
+  const btn=document.getElementById('copyExportBtn');
+  try{
+    navigator.clipboard.writeText(window.__exportScript||'').then(()=>{
+      btn.innerHTML='<span>✅</span> Copied!';
+      btn.style.background='#059669';
+    });
+  }catch(e){
+    const ta=document.createElement('textarea');ta.value=window.__exportScript||'';document.body.appendChild(ta);ta.select();document.execCommand('copy');document.body.removeChild(ta);
+    btn.innerHTML='<span>✅</span> Copied!';
+  }
+}
+
+let _tt;
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('on');clearTimeout(_tt);_tt=setTimeout(()=>t.classList.remove('on'),2800);}
+function gv(id){return(document.getElementById(id)||{}).value?.trim()||'';}
+document.getElementById('admUser').focus();
+
+// ── SIZE MANAGEMENT (tag-based) ──────────────────────────────
+function getSizes(){
+  try{const s=JSON.parse(localStorage.getItem('siteS')||'[]');if(s&&s.length)return s;}catch(e){}
+  return [{label:'S',oos:false},{label:'M',oos:false},{label:'L',oos:false},{label:'XL',oos:false},{label:'XXL',oos:false}];
+}
+function saveSizesLocal(arr){localStorage.setItem('siteS',JSON.stringify(arr));}
+
+function renderSizeEditor(){
+  const sizes=getSizes();
+  const container=document.getElementById('sizeTags');
+  if(!container)return;
+  container.innerHTML=sizes.map((s,i)=>`
+    <div style="display:inline-flex;align-items:center;gap:4px;padding:6px 10px;border-radius:10px;border:2px solid ${s.oos?'rgba(239,68,68,.4)':'var(--brand)'};background:${s.oos?'rgba(239,68,68,.06)':'rgba(99,102,241,.07)'};cursor:pointer" onclick="toggleSizeOos(${i})">
+      <span style="font-size:13px;font-weight:700;color:${s.oos?'var(--danger)':'var(--brand)'};${s.oos?'text-decoration:line-through;':''}">${s.label}</span>
+      ${s.oos?'<span style="font-size:9px;font-weight:700;color:var(--danger)">OOS</span>':''}
+      <span onclick="event.stopPropagation();removeSize(${i})" style="color:var(--ink-4);font-size:15px;line-height:1;margin-left:2px;cursor:pointer">×</span>
+    </div>
+  `).join('')+'<span style="font-size:11px;color:var(--ink-4);align-self:center;padding:4px">'+(sizes.length?'Tap = OOS toggle':'Koi size nahi — type karo ↑')+'</span>';
+}
+
+function addTypedSize(){
+  const inp=document.getElementById('sizeTypeInp');
+  const val=inp.value.trim().replace(/,$/,'');
+  if(!val)return;
+  const sizes=getSizes();
+  if(sizes.find(s=>s.label.toLowerCase()===val.toLowerCase())){toast('Already exists');inp.value='';return;}
+  sizes.push({label:val,oos:false});
+  saveSizesLocal(sizes);
+  renderSizeEditor();
+  inp.value='';
+}
+
+function addQuickSizes(arr){
+  const sizes=getSizes();let added=0;
+  arr.forEach(v=>{if(!sizes.find(s=>s.label===v)){sizes.push({label:v,oos:false});added++;}});
+  if(!added){toast('Already added');return;}
+  saveSizesLocal(sizes);renderSizeEditor();toast('✅ '+added+' sizes added');
+}
+
+function removeSize(i){
+  const sizes=getSizes();sizes.splice(i,1);saveSizesLocal(sizes);renderSizeEditor();
+}
+
+function toggleSizeOos(i){
+  const sizes=getSizes();sizes[i].oos=!sizes[i].oos;saveSizesLocal(sizes);renderSizeEditor();
+}
+
+function clearAllSizes(){
+  if(!confirm('Sab sizes delete?'))return;
+  saveSizesLocal([]);renderSizeEditor();
+}
+
+function saveSizes(){
+  toast('✅ Sizes saved! Exporting...');
+  setTimeout(exportSite,800);
+}
+// ────────────────────────────────────────────────────────────
+
+</script>
+</body>
+</html>
